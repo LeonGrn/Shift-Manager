@@ -123,9 +123,9 @@ public class HomeFragment extends Fragment {
                     Log.i("1111111111" , "" + min);
                     Log.i("1111111111" , "" + sec);
                     //Save day info to SP
-                    countThisDay = new MyDay(cal , time);
+                    countThisDay = new MyDay(time);
 
-                    saveInformationToSP(worker);
+//                    saveInformationToSP(worker);
                 }
             }
             return false;

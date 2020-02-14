@@ -1,32 +1,37 @@
 package com.example.shiftmanager;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+
+
 
 public class MyDay
 {
-    Calendar cal;
-    long min;
-
-    public MyDay(Calendar cal , long min)
+    public class myHours
     {
-        this.cal = cal;
-        this.min = min;
+        long start_time;
+        long end_time;
     }
 
-    public Calendar getCal() {
-        return cal;
+    long m_date;
+    ArrayList<myHours> m_hours = new ArrayList<>();
+
+    public MyDay(long date)
+    {
+        m_date = date;
     }
 
-    public void setCal(Calendar cal) {
-        this.cal = cal;
+    public void addHours(myHours hour)
+    {
+        m_hours.add(hour);
     }
 
-    public long getMin() {
-        return min;
+    public long getCal() {
+        return m_date;
     }
 
-    public void setMin(long min) {
-        this.min = min;
+    public void setCal(long date) {
+        this.m_date = date;
     }
 
 }
