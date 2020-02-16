@@ -52,6 +52,10 @@ public class HomeFragment extends Fragment {
     private Animation animation;
     private String keyInfoDay = "key_time_day";
 
+    private String saveStartTimeAsString = "";
+    private String keySaveStartTime = "key_start_time";
+
+
     private WorkerShiftCounter worker;
     ArrayList<MyDay> currentDay = new ArrayList<>();
     Calendar cal = Calendar.getInstance();
@@ -65,6 +69,7 @@ public class HomeFragment extends Fragment {
         timeShift();
         msp = new MySharePreferences(getActivity().getApplicationContext());
         readDataFromSP();
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,7 +82,7 @@ public class HomeFragment extends Fragment {
         currenttime = root.findViewById(R.id.home_currentTime);
 
         getCurrentDate();
-
+        beforeStartCount();
         bar.setBackgroundColor(Color.rgb(150, 2, 31));
         animation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim);
 
@@ -96,6 +101,17 @@ public class HomeFragment extends Fragment {
                     bar.setVisibility(View.VISIBLE);
                     bar.startAnimation(animation);
                     afterStartCount();
+
+                    //read from SP
+                    saveStartTimeAsString = new Gson().fromJson(msp.getString(keySaveStartTime,getTime()), new TypeToken<String>() {}.getType());
+
+                    //Save day info to SP
+                    String tempConvert = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + 1 + "/" + cal.get(Calendar.YEAR);
+                    worker.addHours(tempConvert , saveStartTimeAsString , getTime());
+
+                    Log.i("1111111111" , "" + worker);
+
+                    writeDataToSP();
                 }
                 else if (flagStartStop == true)
                 {
@@ -103,18 +119,20 @@ public class HomeFragment extends Fragment {
                     beforeStartCount();
                     animation.cancel();
 
-                    //Parse time
-                    long time = SystemClock.elapsedRealtime() - mChronometer.getBase();
-                    int hours = (int)(time /3600000);
-                    int min = (int)(time - hours*3600000)/60000;
-                    int sec = (int)(time - hours*3600000- min*60000)/1000 ;
-                    Log.i("1111111111" , "" + hours);
-                    Log.i("1111111111" , "" + min);
-                    Log.i("1111111111" , "" + sec);
-                    //Save day info to SP
-                   // countThisDay = new MyDay(time);
+                    saveStartTimeAsString = getTime();
+                    msp.putString(keySaveStartTime,new Gson().toJson(saveStartTimeAsString));
 
-//                    saveInformationToSP(worker);
+                    //Parse time
+//                    long time = SystemClock.elapsedRealtime() - mChronometer.getBase();
+//                    int hours = (int)(time /3600000);
+//                    int min = (int)(time - hours*3600000)/60000;
+//                    int sec = (int)(time - hours*3600000- min*60000)/1000 ;
+//                    Log.i("1111111111" , "" + hours);
+//                    Log.i("1111111111" , "" + min);
+//                    Log.i("1111111111" , "" + sec);
+
+
+                    writeDataToSP();
                 }
             }
             return false;
@@ -157,18 +175,28 @@ public class HomeFragment extends Fragment {
             public void run()
             {
                 //time zone
-                Locale currentLocale = Locale.getDefault();
+//                Locale currentLocale = Locale.getDefault();
                 currenttime.setBackgroundColor(Color.rgb(11 , 127 , 178));
                 currenttime.setTextColor(Color.WHITE);
-                DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
-                String zoneDate = dateFormat.format(new Date());
-                currenttime.setText(zoneDate);
+//                DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
+//                String zoneDate = dateFormat.format(new Date());
+                currenttime.setText(getTime());
 
                 timeShift();
             }
         };
         timerHandler.postDelayed(timerRunnable , 100);
     }
+
+    private String getTime()
+    {
+        Locale currentLocale = Locale.getDefault();
+        DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
+        String zoneDate = dateFormat.format(new Date());
+
+        return zoneDate;
+    }
+
 
     private void readDataFromSP()
     {

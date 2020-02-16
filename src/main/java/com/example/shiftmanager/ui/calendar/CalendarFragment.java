@@ -43,7 +43,8 @@ public class CalendarFragment extends Fragment {
 
         msp = new MySharePreferences(getActivity().getApplicationContext());
         readDataFromSP();
-        myDayInfo.addHours("12/01/2020", 45245, 45295);
+        myDayInfo.addHours("12/01/2020", "345", "234");
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,11 +76,11 @@ public class CalendarFragment extends Fragment {
         if (myDay != null) {
             for (int i = 0; i < myDay.getM_hours().size(); i++) {
                 TextView textView = new TextView(getActivity().getApplicationContext());
-                textView.setText(myDay.getDay() + "   " + myDay.getM_hours().get(i).getStart_time() + " - " + myDay.getM_hours().get(i).getEnd_time());
-                textView.setTextSize(25);
+                textView.setText("Worked time:\n" + "   " + myDay.getM_hours().get(i).getStart_time() + " - " + myDay.getM_hours().get(i).getEnd_time());
+                textView.setTextSize(20);
                 textView.setTextColor(Color.parseColor("#0045AD"));
                 textView.setTypeface(null, Typeface.BOLD);
-                textView.setPadding(30 , 30 , 30 , 30);
+                textView.setPadding(20 , 20 , 20 , 20);
                 textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
                 myLinearTextViewDay.addView(textView);

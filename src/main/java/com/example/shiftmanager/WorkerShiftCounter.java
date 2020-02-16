@@ -30,7 +30,7 @@ public class WorkerShiftCounter
         return m_arrDays;
     }
 
-    public void addHours(String szCurrentDay, long start, long stop)
+    public void addHours(String szCurrentDay, String start, String stop)
     {
         MyDay myDay = null;
         for (MyDay day : m_arrDays)
