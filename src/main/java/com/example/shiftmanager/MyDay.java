@@ -7,31 +7,33 @@ import java.util.Calendar;
 
 public class MyDay
 {
-    public class myHours
-    {
-        long start_time;
-        long end_time;
-    }
+    private String m_date;
+    private ArrayList<MyHours> m_hours = new ArrayList<>();
 
-    long m_date;
-    ArrayList<myHours> m_hours = new ArrayList<>();
-
-    public MyDay(long date)
+    public MyDay(String date)
     {
         m_date = date;
     }
 
-    public void addHours(myHours hour)
+    public void addHours(MyHours hour)
     {
         m_hours.add(hour);
     }
 
-    public long getCal() {
+    public String getDay() {
         return m_date;
     }
 
-    public void setCal(long date) {
+    public void setDay(String date) {
         this.m_date = date;
+    }
+
+    public ArrayList<MyHours> getM_hours() {
+        return m_hours;
+    }
+
+    public void setM_hours(ArrayList<MyHours> m_hours) {
+        this.m_hours = m_hours;
     }
 
 }

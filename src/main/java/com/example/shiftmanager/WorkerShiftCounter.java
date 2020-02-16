@@ -7,27 +7,56 @@ import java.util.Calendar;
 public class WorkerShiftCounter
 {
     private int id;
-    ArrayList<MyDay> currentDay;
+    ArrayList<MyDay> m_arrDays;
 
-    public WorkerShiftCounter(int id , ArrayList<MyDay> currentDay)
+    public WorkerShiftCounter(int id)
     {
         this.id = id;
-        this.currentDay = currentDay;
+        this.m_arrDays = new ArrayList<>();
     }
 
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id)
+    {
         this.id = id;
     }
 
-    public ArrayList<MyDay> getCurrentDay() {
-        return currentDay;
+    public ArrayList<MyDay> getArrDays()
+    {
+        return m_arrDays;
     }
 
-    public void setCurrentDay(ArrayList<MyDay> currentDay) {
-        this.currentDay = currentDay;
+    public void addHours(String szCurrentDay, long start, long stop)
+    {
+        MyDay myDay = null;
+        for (MyDay day : m_arrDays)
+        {
+            if (day.getDay().equals(szCurrentDay))
+            {
+                myDay = day;
+                break;
+            }
+        }
+
+        if(myDay == null)
+        {
+            myDay = new MyDay(szCurrentDay);
+            m_arrDays.add(myDay);
+        }
+
+        myDay.getM_hours().add(new MyHours(start, stop));
+    }
+
+    public MyDay getDay(String szCurrentDay)
+    {
+        for (MyDay day : m_arrDays)
+            if (day.getDay().equals(szCurrentDay))
+                return day;
+
+        return null;
     }
 }

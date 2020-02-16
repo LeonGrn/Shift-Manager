@@ -18,15 +18,12 @@
             tools:layout_editor_absoluteY="30dp" />
 
         <LinearLayout
+            android:id="@+id/myLiniarTextViewDay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#CACACA"
+            android:background="#ffffff"
             android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_LST_notes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
 
         </LinearLayout>
 

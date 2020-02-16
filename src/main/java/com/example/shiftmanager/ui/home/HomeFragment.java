@@ -40,7 +40,7 @@ import java.util.Locale;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private TextView currentday;
+    private TextView txt_currentday;
     private TextView currenttime;
     MySharePreferences msp;
     private LinearLayout home_lineartimeclock;
@@ -50,11 +50,8 @@ public class HomeFragment extends Fragment {
     private Chronometer mChronometer;
     private View bar;
     private Animation animation;
-    private String keyInfo = "key_time";
+    private String keyInfoDay = "key_time_day";
 
-    private int totalDayMin = 0;
-    private int id = 111;
-    private MyDay countThisDay;
     private WorkerShiftCounter worker;
     ArrayList<MyDay> currentDay = new ArrayList<>();
     Calendar cal = Calendar.getInstance();
@@ -64,33 +61,25 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        msp = new MySharePreferences(getContext());
-        worker = new WorkerShiftCounter(id , currentDay );
         flagStartStop = true;
         timeShift();
+        msp = new MySharePreferences(getActivity().getApplicationContext());
+        readDataFromSP();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        currentday = root.findViewById(R.id.home_currentdate);
-        currenttime = root.findViewById(R.id.home_currentTime);
         bar = root.findViewById(R.id.bar);
-        bar.setBackgroundColor(Color.rgb(150, 2, 31));
-        animation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim);
         home_lineartimeclock = root.findViewById(R.id.home_lineartimeclock);
         mChronometer = root.findViewById(R.id.simpleChronometer);
+        txt_currentday = root.findViewById(R.id.home_currentdate);
+        currenttime = root.findViewById(R.id.home_currentTime);
 
-        //Log.i("2312312312",keyInfo);
-        if(msp.getString(keyInfo,"") == "")
-        {
-            beforeStartCount();
-            getCurrentDate();
-        }
-        else
-        {
-            Log.i("2312312312","llllllllllllll");
-        }
+        getCurrentDate();
+
+        bar.setBackgroundColor(Color.rgb(150, 2, 31));
+        animation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim);
 
         home_lineartimeclock.setOnTouchListener(scanIt);
 
@@ -123,7 +112,7 @@ public class HomeFragment extends Fragment {
                     Log.i("1111111111" , "" + min);
                     Log.i("1111111111" , "" + sec);
                     //Save day info to SP
-                    countThisDay = new MyDay(time);
+                   // countThisDay = new MyDay(time);
 
 //                    saveInformationToSP(worker);
                 }
@@ -136,28 +125,9 @@ public class HomeFragment extends Fragment {
     public void getCurrentDate()
     {
         int tempMonth = cal.get(Calendar.MONTH) + 1;
-        currentday.setText(cal.get(Calendar.DAY_OF_MONTH) + "/" + tempMonth + "/" + cal.get(Calendar.YEAR));
-        currentday.setBackgroundColor(Color.rgb(11 , 127 , 178));
-        currentday.setTextColor(Color.WHITE);
-    }
-
-    private void saveInformationToSP(WorkerShiftCounter workerInfo)
-    {
-        ArrayList<WorkerShiftCounter> list = null;
-
-        Gson gson = new Gson();
-        try
-        {
-            list = gson.fromJson(msp.getString(keyInfo,""),new TypeToken<List<WorkerShiftCounter>>(){}.getType());
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            list = new ArrayList<>();
-        }
-
-        list.add(workerInfo);
-        msp.putString(keyInfo,gson.toJson(list));
+        txt_currentday.setText(cal.get(Calendar.DAY_OF_MONTH) + "/" + tempMonth + "/" + cal.get(Calendar.YEAR));
+        txt_currentday.setBackgroundColor(Color.rgb(11 , 127 , 178));
+        txt_currentday.setTextColor(Color.WHITE);
     }
 
     private void beforeStartCount()
@@ -198,5 +168,23 @@ public class HomeFragment extends Fragment {
             }
         };
         timerHandler.postDelayed(timerRunnable , 100);
+    }
+
+    private void readDataFromSP()
+    {
+        try
+        {
+            worker = new Gson().fromJson(msp.getString(keyInfoDay, ""), new TypeToken<WorkerShiftCounter>() {
+            }.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(worker == null)
+            worker = new WorkerShiftCounter(msp.getInt("personalID" , 6666666));
+    }
+
+    private void writeDataToSP()
+    {
+        msp.putString(keyInfoDay,new Gson().toJson(worker));
     }
 }
