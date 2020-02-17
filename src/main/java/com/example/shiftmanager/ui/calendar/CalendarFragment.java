@@ -65,7 +65,8 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth)
             {
-                //String clickedDate = dayOfMonth + "/" + month + 1 + "/" + year;
+                listView.setAdapter(null);
+
                 long startDate = 0;
                 try
                 {

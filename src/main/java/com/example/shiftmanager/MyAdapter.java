@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MyAdapter extends BaseAdapter {
     private Context context;
@@ -25,6 +24,10 @@ public class MyAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         return arrayList.size();
+    }
+
+    public void clear() {
+        arrayList.clear();
     }
 
     @Override

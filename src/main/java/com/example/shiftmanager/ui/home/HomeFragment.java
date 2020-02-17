@@ -132,16 +132,6 @@ public class HomeFragment extends Fragment {
                     animation.cancel();
 
                     msp.putLong(keySaveStartTime,getTimeAsLong());
-
-                    //Parse time
-//                    long time = SystemClock.elapsedRealtime() - mChronometer.getBase();
-//                    int hours = (int)(time /3600000);
-//                    int min = (int)(time - hours*3600000)/60000;
-//                    int sec = (int)(time - hours*3600000- min*60000)/1000 ;
-//                    Log.i("1111111111" , "" + hours);
-//                    Log.i("1111111111" , "" + min);
-//                    Log.i("1111111111" , "" + sec);
-
                 }
             }
             return false;
@@ -185,27 +175,18 @@ public class HomeFragment extends Fragment {
             public void run()
             {
                 //time zone
-//                Locale currentLocale = Locale.getDefault();
+                Locale currentLocale = Locale.getDefault();
                 currenttime.setBackgroundColor(Color.rgb(11 , 127 , 178));
                 currenttime.setTextColor(Color.WHITE);
-//                DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
-//                String zoneDate = dateFormat.format(new Date());
-                currenttime.setText(getTimeAsString());
+                DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
+                String zoneDate = dateFormat.format(new Date());
+                currenttime.setText(zoneDate);
 
                 timeShift();
             }
         };
         timerHandler.postDelayed(timerRunnable , 100);
     }
-
-//    private String getTime()
-//    {
-//        Locale currentLocale = Locale.getDefault();
-//        DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
-//        String zoneDate = dateFormat.format(new Date());
-//
-//        return zoneDate;
-//    }
 
     private long getTimeAsLong()
     {
@@ -219,15 +200,6 @@ public class HomeFragment extends Fragment {
         String timeString = new SimpleDateFormat("HH:mm:ss").format(timeMilli);
         return timeString;
     }
-
-//    private long convertStringToLong()
-//    {
-//        long temp = 0;
-//        temp = Long.valueOf(saveStartTimeAsString);
-//        Log.i("1111111111" , "" + temp);
-//        return temp;
-//    }
-
 
     private void readDataFromSP()
     {
