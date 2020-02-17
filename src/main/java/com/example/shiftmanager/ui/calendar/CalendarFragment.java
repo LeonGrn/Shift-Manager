@@ -3,7 +3,10 @@ package com.example.shiftmanager.ui.calendar;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
@@ -22,6 +25,11 @@ import com.example.shiftmanager.R;
 import com.example.shiftmanager.WorkerShiftCounter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class CalendarFragment extends Fragment {
 
@@ -43,7 +51,7 @@ public class CalendarFragment extends Fragment {
 
         msp = new MySharePreferences(getActivity().getApplicationContext());
         readDataFromSP();
-        myDayInfo.addHours("12/01/2020", "345", "234");
+
 
     }
 
@@ -55,28 +63,45 @@ public class CalendarFragment extends Fragment {
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                String clickedDate = String.valueOf(dayOfMonth + "/" + month + 1 + "/" + year);
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth)
+            {
+                //String clickedDate = dayOfMonth + "/" + month + 1 + "/" + year;
+                long startDate = 0;
+                try
+                {
+                    int monthTemp = 1 + month;
+                    String dateString = dayOfMonth+ "/" +monthTemp + "/" + year;
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = sdf.parse(dateString);
 
-                Toast.makeText(getContext(), "" + clickedDate, Toast.LENGTH_LONG).show();
+                    startDate = date.getTime();
 
-                initList(clickedDate);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                initList(startDate);
             }
         });
 
         return root;
     }
 
-
-    private void initList(String lDay)
+    private void initList(Long lDay)
     {
         clearAllNotes();
+        String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(lDay);
+        MyDay myDay = myDayInfo.getDay(timeStamp);
 
-        MyDay myDay = myDayInfo.getDay(lDay);
         if (myDay != null) {
             for (int i = 0; i < myDay.getM_hours().size(); i++) {
+
                 TextView textView = new TextView(getActivity().getApplicationContext());
-                textView.setText("Worked time:\n" + "   " + myDay.getM_hours().get(i).getStart_time() + " - " + myDay.getM_hours().get(i).getEnd_time());
+                String convertEndTime = new SimpleDateFormat("HH:mm:ss").format(myDay.getM_hours().get(i).getEnd_time());
+                String convertStartTime = new SimpleDateFormat("HH:mm:ss").format(myDay.getM_hours().get(i).getStart_time());
+
+                textView.setText("Worked time:\n" + "   " + convertStartTime + " - " + convertEndTime);
                 textView.setTextSize(20);
                 textView.setTextColor(Color.parseColor("#0045AD"));
                 textView.setTypeface(null, Typeface.BOLD);
@@ -84,9 +109,12 @@ public class CalendarFragment extends Fragment {
                 textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
                 myLinearTextViewDay.addView(textView);
+
+
             }
         }
     }
+
 
     private void clearAllNotes()
     {

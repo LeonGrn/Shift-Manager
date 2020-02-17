@@ -1,5 +1,8 @@
 package com.example.shiftmanager;
 
+import android.util.Log;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -30,7 +33,7 @@ public class WorkerShiftCounter
         return m_arrDays;
     }
 
-    public void addHours(String szCurrentDay, String start, String stop)
+    public void addHours(String szCurrentDay, long start, long stop)
     {
         MyDay myDay = null;
         for (MyDay day : m_arrDays)

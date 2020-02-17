@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,10 +52,10 @@ public class HomeFragment extends Fragment {
     private View bar;
     private Animation animation;
     private String keyInfoDay = "key_time_day";
-
-    private String saveStartTimeAsString = "";
+    private long saveStartTimeAsLong = 0;
     private String keySaveStartTime = "key_start_time";
 
+    private long saveTempTime = 0;
 
     private WorkerShiftCounter worker;
     ArrayList<MyDay> currentDay = new ArrayList<>();
@@ -69,6 +70,15 @@ public class HomeFragment extends Fragment {
         timeShift();
         msp = new MySharePreferences(getActivity().getApplicationContext());
         readDataFromSP();
+//        saveTempTime = convertStringToLong();
+//        saveStartTimeAsString = msp.getString(keySaveStartTime,getTime());
+//        if(saveStartTimeAsString != "")
+//        {
+//            saveTempTime = convertStringToLong();
+//            flagStartStop = true;
+//            mChronometer.setBase(saveTempTime);
+//            mChronometer.start();
+//        }
 
     }
 
@@ -103,15 +113,17 @@ public class HomeFragment extends Fragment {
                     afterStartCount();
 
                     //read from SP
-                    saveStartTimeAsString = new Gson().fromJson(msp.getString(keySaveStartTime,getTime()), new TypeToken<String>() {}.getType());
+                    saveStartTimeAsLong = msp.getLong(keySaveStartTime,getTimeAsLong());
 
                     //Save day info to SP
-                    String tempConvert = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + 1 + "/" + cal.get(Calendar.YEAR);
-                    worker.addHours(tempConvert , saveStartTimeAsString , getTime());
+//                    String tempConvert = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + 1 + "/" + cal.get(Calendar.YEAR);
+                    long timeMilli2 = cal.getTimeInMillis();
+                    String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(timeMilli2);
 
-                    Log.i("1111111111" , "" + worker);
+                    worker.addHours(timeStamp , saveStartTimeAsLong , getTimeAsLong());
 
                     writeDataToSP();
+//                    saveStartTimeAsLong = 0;
                 }
                 else if (flagStartStop == true)
                 {
@@ -119,8 +131,7 @@ public class HomeFragment extends Fragment {
                     beforeStartCount();
                     animation.cancel();
 
-                    saveStartTimeAsString = getTime();
-                    msp.putString(keySaveStartTime,new Gson().toJson(saveStartTimeAsString));
+                    msp.putLong(keySaveStartTime,getTimeAsLong());
 
                     //Parse time
 //                    long time = SystemClock.elapsedRealtime() - mChronometer.getBase();
@@ -131,8 +142,6 @@ public class HomeFragment extends Fragment {
 //                    Log.i("1111111111" , "" + min);
 //                    Log.i("1111111111" , "" + sec);
 
-
-                    writeDataToSP();
                 }
             }
             return false;
@@ -160,7 +169,8 @@ public class HomeFragment extends Fragment {
 
     private void afterStartCount()
     {
-        mChronometer.setBase(SystemClock.elapsedRealtime());
+        saveTempTime = SystemClock.elapsedRealtime();
+        mChronometer.setBase(saveTempTime);
         mChronometer.start();
         MySignal.vibrate(getContext() , 2000);
         flagStartStop = true;
@@ -180,7 +190,7 @@ public class HomeFragment extends Fragment {
                 currenttime.setTextColor(Color.WHITE);
 //                DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
 //                String zoneDate = dateFormat.format(new Date());
-                currenttime.setText(getTime());
+                currenttime.setText(getTimeAsString());
 
                 timeShift();
             }
@@ -188,14 +198,35 @@ public class HomeFragment extends Fragment {
         timerHandler.postDelayed(timerRunnable , 100);
     }
 
-    private String getTime()
-    {
-        Locale currentLocale = Locale.getDefault();
-        DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
-        String zoneDate = dateFormat.format(new Date());
+//    private String getTime()
+//    {
+//        Locale currentLocale = Locale.getDefault();
+//        DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, currentLocale);
+//        String zoneDate = dateFormat.format(new Date());
+//
+//        return zoneDate;
+//    }
 
-        return zoneDate;
+    private long getTimeAsLong()
+    {
+        long timeMilli = cal.getTimeInMillis();
+        return timeMilli;
     }
+
+    private String getTimeAsString()
+    {
+        long timeMilli = cal.getTimeInMillis();
+        String timeString = new SimpleDateFormat("HH:mm:ss").format(timeMilli);
+        return timeString;
+    }
+
+//    private long convertStringToLong()
+//    {
+//        long temp = 0;
+//        temp = Long.valueOf(saveStartTimeAsString);
+//        Log.i("1111111111" , "" + temp);
+//        return temp;
+//    }
 
 
     private void readDataFromSP()
