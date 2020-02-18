@@ -51,14 +51,14 @@ public class HomeFragment extends Fragment {
     private Chronometer mChronometer;
     private View bar;
     private Animation animation;
-    private String keyInfoDay = "key_time_day";
-    private long saveStartTimeAsLong = 0;
+
+    private String keyCheckExistingCount = "key_check_existing_time";
     private String keySaveStartTime = "key_start_time";
 
-    private long saveTempTime = 0;
+    private long saveExistingCount = 0;
+    private long saveStartTimeAsLong = 0;
 
     private WorkerShiftCounter worker;
-    ArrayList<MyDay> currentDay = new ArrayList<>();
     Calendar cal = Calendar.getInstance();
 
 
@@ -69,17 +69,8 @@ public class HomeFragment extends Fragment {
         flagStartStop = true;
         timeShift();
         msp = new MySharePreferences(getActivity().getApplicationContext());
-        readDataFromSP();
-//        saveTempTime = convertStringToLong();
-//        saveStartTimeAsString = msp.getString(keySaveStartTime,getTime());
-//        if(saveStartTimeAsString != "")
-//        {
-//            saveTempTime = convertStringToLong();
-//            flagStartStop = true;
-//            mChronometer.setBase(saveTempTime);
-//            mChronometer.start();
-//        }
-
+        worker = msp.readDataFromSP();
+        saveStartTimeAsLong = msp.getLong(keySaveStartTime,0);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,6 +87,15 @@ public class HomeFragment extends Fragment {
         bar.setBackgroundColor(Color.rgb(150, 2, 31));
         animation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim);
 
+        saveExistingCount = msp.getLong(keyCheckExistingCount,0);
+        if(saveExistingCount > 0)
+        {
+            mChronometer.setBase(saveExistingCount);
+            mChronometer.start();
+            flagStartStop = true;
+        }
+
+
         home_lineartimeclock.setOnTouchListener(scanIt);
 
         return root;
@@ -106,32 +106,40 @@ public class HomeFragment extends Fragment {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                //First click
                 if (flagStartStop == false)
                 {
                     bar.setVisibility(View.VISIBLE);
                     bar.startAnimation(animation);
                     afterStartCount();
 
-                    //read from SP
-                    saveStartTimeAsLong = msp.getLong(keySaveStartTime,getTimeAsLong());
 
-                    //Save day info to SP
-//                    String tempConvert = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + 1 + "/" + cal.get(Calendar.YEAR);
-                    long timeMilli2 = cal.getTimeInMillis();
-                    String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(timeMilli2);
-
-                    worker.addHours(timeStamp , saveStartTimeAsLong , getTimeAsLong());
-
-                    writeDataToSP();
-//                    saveStartTimeAsLong = 0;
+                    saveExistingCount = SystemClock.elapsedRealtime();
+                    saveStartTimeAsLong = (new Date()).getTime();
+                    msp.putLong(keyCheckExistingCount,saveExistingCount);
+                    msp.putLong(keySaveStartTime,saveStartTimeAsLong);
                 }
-                else if (flagStartStop == true)
+                else if (flagStartStop == true) //Second Click
                 {
                     bar.setVisibility(View.GONE);
                     beforeStartCount();
                     animation.cancel();
 
-                    msp.putLong(keySaveStartTime,getTimeAsLong());
+                    //saveStartTimeAsLong = msp.getLong(keySaveStartTime,0);
+
+                    String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format((new Date()).getTime());
+
+                    Log.i("333333333333333" , " " + timeStamp);
+
+                    Log.i("444444444444444" , " " + (new Date()).getTime());
+                    worker.addHours(timeStamp , saveStartTimeAsLong , (new Date()).getTime());
+                    msp.writeDataToSP(worker);
+
+                    saveStartTimeAsLong = 0;
+
+                    msp.putLong(keySaveStartTime,saveStartTimeAsLong);
+                    saveExistingCount = 0;
+                    msp.putLong(keyCheckExistingCount,saveExistingCount);
                 }
             }
             return false;
@@ -159,7 +167,7 @@ public class HomeFragment extends Fragment {
 
     private void afterStartCount()
     {
-        saveTempTime = SystemClock.elapsedRealtime();
+        long saveTempTime = SystemClock.elapsedRealtime();
         mChronometer.setBase(saveTempTime);
         mChronometer.start();
         MySignal.vibrate(getContext() , 2000);
@@ -188,34 +196,4 @@ public class HomeFragment extends Fragment {
         timerHandler.postDelayed(timerRunnable , 100);
     }
 
-    private long getTimeAsLong()
-    {
-        long timeMilli = cal.getTimeInMillis();
-        return timeMilli;
-    }
-
-    private String getTimeAsString()
-    {
-        long timeMilli = cal.getTimeInMillis();
-        String timeString = new SimpleDateFormat("HH:mm:ss").format(timeMilli);
-        return timeString;
-    }
-
-    private void readDataFromSP()
-    {
-        try
-        {
-            worker = new Gson().fromJson(msp.getString(keyInfoDay, ""), new TypeToken<WorkerShiftCounter>() {
-            }.getType());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(worker == null)
-            worker = new WorkerShiftCounter(msp.getInt("personalID" , 6666666));
-    }
-
-    private void writeDataToSP()
-    {
-        msp.putString(keyInfoDay,new Gson().toJson(worker));
-    }
 }

@@ -3,11 +3,15 @@ package com.example.shiftmanager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class MySharePreferences {
 
     private SharedPreferences prefs;
+    private String keyInfoDay = "key_time_day";
 
     public MySharePreferences(Context context) {
         prefs = context.getSharedPreferences("MyPref2", MODE_PRIVATE);
@@ -46,5 +50,26 @@ public class MySharePreferences {
 
     public void removeKey(String key) {
         prefs.edit().remove(key);
+    }
+
+    public WorkerShiftCounter readDataFromSP()
+    {
+        WorkerShiftCounter worker = null;
+        try
+        {
+            worker = new Gson().fromJson(getString(keyInfoDay, ""), new TypeToken<WorkerShiftCounter>() {
+            }.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(worker == null)
+            worker = new WorkerShiftCounter(getInt("personalID" , 6666666));
+
+        return  worker;
+    }
+
+    public void writeDataToSP(WorkerShiftCounter worker)
+    {
+        putString(keyInfoDay,new Gson().toJson(worker));
     }
 }

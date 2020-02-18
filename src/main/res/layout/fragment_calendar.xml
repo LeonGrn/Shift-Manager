@@ -14,18 +14,18 @@
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="34dp"
-            tools:layout_editor_absoluteY="30dp" />
+            android:background="@drawable/ic_shadows"
+             />
 
 
         <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:listSelector="@drawable/ic_bkg"
-
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="55dp"
+            android:dividerHeight="10.0sp"
             android:footerDividersEnabled="false"
-            />
+            android:listSelector="@drawable/ic_bkg" />
 
     </LinearLayout>
 

@@ -1,12 +1,17 @@
 package com.example.shiftmanager.ui.calendar;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CalendarView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
@@ -14,7 +19,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.shiftmanager.EditShiftActivity;
 import com.example.shiftmanager.MyAdapter;
+import com.example.shiftmanager.MyAdapterAddShift;
 import com.example.shiftmanager.MyDay;
 import com.example.shiftmanager.MyHours;
 import com.example.shiftmanager.MySharePreferences;
@@ -24,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,24 +41,23 @@ public class CalendarFragment extends Fragment {
     private CalendarViewModel calendarViewModel;
     private CalendarView calendarView;
     MySharePreferences msp;
-
-    private String keyInfoDay = "key_time_day";
     WorkerShiftCounter myDayInfo = null;
-
     private ListView listView;
     private MyAdapter adapter;
+    private MyAdapterAddShift adapter2;
+    Calendar cal = Calendar.getInstance();
+    private ArrayList<TextView> addShift;
 
     public CalendarFragment() {
         super();
     }
-    Calendar cal = Calendar.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         msp = new MySharePreferences(getActivity().getApplicationContext());
-        readDataFromSP();
+        myDayInfo = msp.readDataFromSP();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,7 +72,10 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth)
             {
-                listView.setAdapter(null);
+                addShift = new ArrayList<>();
+                addShift.add(new TextView(getActivity().getApplicationContext()));
+                adapter2 = new MyAdapterAddShift(getActivity().getApplicationContext(), addShift);
+                listView.setAdapter(adapter2);
 
                 long startDate = 0;
                 try
@@ -104,27 +114,17 @@ public class CalendarFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
                 {
-
+                    moveToNewActivity();
                 }
             });
         }
     }
 
-    private void readDataFromSP()
-    {
-        try
-        {
-            myDayInfo = new Gson().fromJson(msp.getString(keyInfoDay, ""), new TypeToken<WorkerShiftCounter>() {
-            }.getType());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(myDayInfo == null)
-            myDayInfo = new WorkerShiftCounter(msp.getInt("personalID", 6666666));
-    }
+    private void moveToNewActivity () {
 
-    private void writeDataToSP()
-    {
-        msp.putString(keyInfoDay,new Gson().toJson(myDayInfo));
+        Intent i = new Intent(getActivity(), EditShiftActivity.class);
+        startActivity(i);
+        (getActivity()).overridePendingTransition(0, 0);
+
     }
 }
