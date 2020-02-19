@@ -12,10 +12,18 @@
         android:screenOrientation="portrait"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditShiftActivity"></activity>
-        <activity android:name=".MainActivity" />
+
+        <activity android:name=".EditShiftActivity"
+            android:label="Edit Shift"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".IntoActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

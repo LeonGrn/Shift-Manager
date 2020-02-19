@@ -47,6 +47,8 @@ public class CalendarFragment extends Fragment {
     private MyAdapterAddShift adapter2;
     Calendar cal = Calendar.getInstance();
     private ArrayList<TextView> addShift;
+    private String currentDay = null;
+
 
     public CalendarFragment() {
         super();
@@ -65,6 +67,8 @@ public class CalendarFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_calendar, container, false);
         calendarView = root.findViewById(R.id.calendarView);
         listView = root.findViewById(R.id.listView);
+
+        setAddShiftTxt();
         initList(cal.getTimeInMillis());
 
 
@@ -72,10 +76,8 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth)
             {
-                addShift = new ArrayList<>();
-                addShift.add(new TextView(getActivity().getApplicationContext()));
-                adapter2 = new MyAdapterAddShift(getActivity().getApplicationContext(), addShift);
-                listView.setAdapter(adapter2);
+                setAddShiftTxt();
+
 
                 long startDate = 0;
                 try
@@ -99,10 +101,20 @@ public class CalendarFragment extends Fragment {
         return root;
     }
 
+    private void setAddShiftTxt()
+    {
+        addShift = new ArrayList<>();
+        addShift.add(new TextView(getActivity().getApplicationContext()));
+        adapter2 = new MyAdapterAddShift(getActivity().getApplicationContext(), addShift);
+        listView.setAdapter(adapter2);
+    }
+
+
     private void initList(Long lDay)
     {
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(lDay);
         MyDay myDay = myDayInfo.getDay(timeStamp);
+        currentDay = timeStamp;
 
         if (myDay != null)
         {
@@ -114,17 +126,12 @@ public class CalendarFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
                 {
-                    moveToNewActivity();
+                    Intent intent = new Intent(getActivity(), EditShiftActivity.class);
+                    startActivity(intent);
+                    (getActivity()).overridePendingTransition(0, 0);
                 }
             });
         }
     }
 
-    private void moveToNewActivity () {
-
-        Intent i = new Intent(getActivity(), EditShiftActivity.class);
-        startActivity(i);
-        (getActivity()).overridePendingTransition(0, 0);
-
-    }
 }

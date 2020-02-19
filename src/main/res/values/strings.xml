@@ -6,4 +6,16 @@
     <string name="title_calendar">Calendar</string>
     <string name="title_activity_intro">IntoActivity</string>
     <string name="title_activity_test">test</string>
+
+
+    <string name="status_prompt">Choose a country</string>
+
+    <string-array name="status_shift">
+        <item>Work on a regular day</item>
+        <item>Work on a rest day</item>
+        <item>day off(paid)</item>
+        <item>Sick day(paid)</item>
+    </string-array>
+
+
 </resources>

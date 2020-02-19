@@ -1,11 +1,6 @@
 package com.example.shiftmanager;
 
-import android.util.Log;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-
 
 public class WorkerShiftCounter
 {
