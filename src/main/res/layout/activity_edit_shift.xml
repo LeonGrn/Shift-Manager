@@ -41,6 +41,8 @@
                 android:text="From" />
 
             <EditText
+                android:id="@+id/txt_from"
+                android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -61,6 +63,8 @@
                 android:text="To" />
 
             <EditText
+                android:id="@+id/txt_to"
+                android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

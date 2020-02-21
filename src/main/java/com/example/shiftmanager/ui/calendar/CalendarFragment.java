@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class CalendarFragment extends Fragment {
     Calendar cal = Calendar.getInstance();
     private ArrayList<TextView> addShift;
     private String currentDay = null;
+    private String lDate = "";
 
 
     public CalendarFragment() {
@@ -55,11 +57,12 @@ public class CalendarFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        Log.i("22222222222222222" , "Create");
         msp = new MySharePreferences(getActivity().getApplicationContext());
         myDayInfo = msp.readDataFromSP();
+        super.onCreate(savedInstanceState);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,10 +70,6 @@ public class CalendarFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_calendar, container, false);
         calendarView = root.findViewById(R.id.calendarView);
         listView = root.findViewById(R.id.listView);
-
-        setAddShiftTxt();
-        initList(cal.getTimeInMillis());
-
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -113,6 +112,7 @@ public class CalendarFragment extends Fragment {
     private void initList(Long lDay)
     {
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(lDay);
+        lDate = timeStamp;
         MyDay myDay = myDayInfo.getDay(timeStamp);
         currentDay = timeStamp;
 
@@ -127,11 +127,56 @@ public class CalendarFragment extends Fragment {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
                 {
                     Intent intent = new Intent(getActivity(), EditShiftActivity.class);
+
+                    intent.putExtra("DayIndex", listView.getItemAtPosition(i).toString());
+                    intent.putExtra("DayDate", lDate);
+
+                    Log.i("22222222222222222" , listView.getItemAtPosition(i).toString());
+
                     startActivity(intent);
                     (getActivity()).overridePendingTransition(0, 0);
                 }
             });
         }
+        else
+            setAddShiftTxt();
     }
 
+
+
+
+
+    @Override
+    public void onPause()
+    {
+        Log.i("22222222222222222" , "Pause");
+
+        super.onPause();
+    }
+
+    @Override
+    public void onStart()
+    {
+        Log.i("22222222222222222" , "Start");
+        super.onStart();
+    }
+
+    @Override
+    public void onResume()
+    {
+        Log.i("22222222222222222" , "Resume");
+        msp = new MySharePreferences(getActivity().getApplicationContext());
+        myDayInfo = msp.readDataFromSP();
+        setAddShiftTxt();
+        initList(cal.getTimeInMillis());
+        super.onResume();
+    }
+
+    @Override
+    public void onStop()
+    {
+        Log.i("22222222222222222" , "Stop");
+
+        super.onStop();
+    }
 }
