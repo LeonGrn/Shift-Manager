@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 
@@ -35,7 +37,8 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
     private int elementIndex = -1;
     private String elementDate = "";
     private MyHours myhours = null;
-
+    private long tempStartTime = 0;
+    private long tempStopTime = 0;
     MySharePreferences msp;
 
     @Override
@@ -84,10 +87,9 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
 
         btn_save.setOnClickListener(saveShift);
         txt_remove_shift.setOnClickListener(removeShift);
-
+        txt_from.setOnClickListener(setTimeFrom);
+        txt_to.setOnClickListener(setTimeTo);
         spinner.setOnItemSelectedListener(this);
-
-
     }
 
 
@@ -179,6 +181,68 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         }
     };
 
+
+    View.OnClickListener setTimeFrom = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
+            TimePickerDialog mTimePicker = new TimePickerDialog(txt_from.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                    txt_from.setText( selectedHour + ":" + selectedMinute);
+                    String string_time = selectedHour + ":" + selectedMinute;
+                    SimpleDateFormat f = new SimpleDateFormat("HH:mm");
+                    try {
+                        Date d = f.parse(string_time);
+                        tempStartTime = d.getTime();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("22222222222222222", tempStartTime + "");
+
+                }
+            }, hour, minute, false);//Yes 24 hour time
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+
+        }
+    };
+
+
+    View.OnClickListener setTimeTo = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
+            TimePickerDialog mTimePicker = new TimePickerDialog(txt_from.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                    txt_to.setText( selectedHour + ":" + selectedMinute);
+                    String string_time = selectedHour + ":" + selectedMinute;
+                    SimpleDateFormat f = new SimpleDateFormat("HH:mm");
+                    try {
+                        Date d = f.parse(string_time);
+                        tempStopTime = d.getTime();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("22222222222222222", timePicker.toString() + " " + timePicker.getMinute());
+
+                    txt_view_time.setText(timeDifference(tempStopTime - tempStartTime));;
+                }
+            }, hour, minute, false);//Yes 24 hour time
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+
+        }
+    };
 
     private  void goToGameActivity()
     {

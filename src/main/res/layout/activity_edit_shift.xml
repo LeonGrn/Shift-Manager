@@ -42,7 +42,8 @@
 
             <EditText
                 android:id="@+id/txt_from"
-                android:enabled="false"
+                android:editable="false"
+                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -64,7 +65,8 @@
 
             <EditText
                 android:id="@+id/txt_to"
-                android:enabled="false"
+                android:editable="false"
+                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
