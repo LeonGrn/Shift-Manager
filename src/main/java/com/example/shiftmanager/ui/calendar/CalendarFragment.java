@@ -39,7 +39,6 @@ import java.util.Date;
 
 public class CalendarFragment extends Fragment {
 
-    private CalendarViewModel calendarViewModel;
     private CalendarView calendarView;
     MySharePreferences msp;
     WorkerShiftCounter myDayInfo = null;
@@ -50,7 +49,12 @@ public class CalendarFragment extends Fragment {
     private ArrayList<TextView> addShift;
     private String currentDay = null;
     private String lDate = "";
+    private long startDate = 0;
 
+    enum DayStatus
+    {
+        RegularDay , WorkOnRestDay , DayOff, SickDay
+    }
 
     public CalendarFragment() {
         super();
@@ -59,17 +63,15 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
-        Log.i("22222222222222222" , "Create");
+        Log.i("OnCreate" , "Create");
         msp = new MySharePreferences(getActivity().getApplicationContext());
         myDayInfo = msp.readDataFromSP();
         super.onCreate(savedInstanceState);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        calendarViewModel = ViewModelProviders.of(this).get(CalendarViewModel.class);
         View root = inflater.inflate(R.layout.fragment_calendar, container, false);
-        calendarView = root.findViewById(R.id.calendarView);
-        listView = root.findViewById(R.id.listView);
+        findViews(root);
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -78,7 +80,7 @@ public class CalendarFragment extends Fragment {
                 setAddShiftTxt();
 
 
-                long startDate = 0;
+                startDate = 0;
                 try
                 {
                     int monthTemp = 1 + month;
@@ -109,7 +111,7 @@ public class CalendarFragment extends Fragment {
     }
 
 
-    private void initList(Long lDay)
+    private void initList(long lDay)
     {
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(lDay);
         lDate = timeStamp;
@@ -131,8 +133,6 @@ public class CalendarFragment extends Fragment {
                     intent.putExtra("DayIndex", listView.getItemAtPosition(i).toString());
                     intent.putExtra("DayDate", lDate);
 
-                    Log.i("22222222222222222" , listView.getItemAtPosition(i).toString());
-
                     startActivity(intent);
                     (getActivity()).overridePendingTransition(0, 0);
                 }
@@ -143,13 +143,16 @@ public class CalendarFragment extends Fragment {
     }
 
 
-
-
+    private void findViews(View root)
+    {
+        calendarView = root.findViewById(R.id.calendarView);
+        listView = root.findViewById(R.id.listView);
+    }
 
     @Override
     public void onPause()
     {
-        Log.i("22222222222222222" , "Pause");
+        Log.i("onPause" , "Pause");
 
         super.onPause();
     }
@@ -157,25 +160,29 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onStart()
     {
-        Log.i("22222222222222222" , "Start");
+        Log.i("onStart" , "Start");
         super.onStart();
     }
 
     @Override
     public void onResume()
     {
-        Log.i("22222222222222222" , "Resume");
+        Log.i("onResume" , "Resume");
         msp = new MySharePreferences(getActivity().getApplicationContext());
         myDayInfo = msp.readDataFromSP();
         setAddShiftTxt();
-        initList(cal.getTimeInMillis());
+        if(startDate != 0)
+            initList(startDate);
+        else
+            initList(cal.getTimeInMillis());
+
         super.onResume();
     }
 
     @Override
     public void onStop()
     {
-        Log.i("22222222222222222" , "Stop");
+        Log.i("OnStop" , "Stop");
 
         super.onStop();
     }

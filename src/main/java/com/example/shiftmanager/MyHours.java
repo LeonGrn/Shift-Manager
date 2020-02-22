@@ -12,7 +12,8 @@ public class MyHours
         m_end_time = end_time;
     }
 
-    public long getStart_time() {
+    public long getStart_time()
+    {
         return m_start_time;
     }
 
@@ -26,6 +27,10 @@ public class MyHours
 
     public void setEnd_time(long end_time) {
         m_end_time = end_time;
+    }
+
+    public long getTotal_time() {
+        return m_end_time - m_start_time;
     }
 }
 

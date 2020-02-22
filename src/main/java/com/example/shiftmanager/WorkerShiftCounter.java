@@ -62,14 +62,9 @@ public class WorkerShiftCounter
     {
         for (MyDay day : m_arrDays)
             if(day.getDay().equals(selectedDay))
-            {
                 for(int j = 0; j < day.getM_hours().size() ; j++)
-                {
                     if(day.getM_hours().get(j) == day.getM_hours().get(index))
                         return day.getM_hours().get(j);
-                }
-            }
-
         return null;
     }
 
@@ -81,9 +76,16 @@ public class WorkerShiftCounter
             m_arrDays.remove(day);
     }
 
-    public void addHourByIndex(MyHours myhours, String selectedDay)
+    public long getTotalMonthHour()
     {
-        MyDay day = getDay(selectedDay);
-        day.getM_hours().add(myhours);
+        long totalHours = 0;
+        for(int i = 0 ; i < getArrDays().size() ; i++)
+        {
+            for(int j = 0 ; j < getArrDays().get(i).getM_hours().size() ; j++)
+            {
+                totalHours += getArrDays().get(i).getM_hours().get(j).getTotal_time();
+            }
+        }
+        return totalHours;
     }
 }

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,13 +23,12 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 public class EditShiftActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private Button btn_save;
     private EditText txt_from , txt_to;
-    private TextView txt_remove_shift , txt_shiftInfo , txt_view_time , txt_view_to;
+    private TextView txt_remove_shift , txt_shiftInfo , txt_view_time , txt_view_to , txt_view_from;
     private WorkerShiftCounter worker;
     private Spinner spinner;
     private MyAdapter adapter;
@@ -45,14 +43,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_shift);
-        txt_from = findViewById(R.id.txt_from);
-        txt_to = findViewById(R.id.txt_to);
-        btn_save = findViewById(R.id.btn_save);
-        txt_view_time = findViewById(R.id.txt_view_time);
-        txt_shiftInfo = findViewById(R.id.txt_shiftInfo);
-        txt_remove_shift = findViewById(R.id.txt_remove_shift);
-        spinner = findViewById(R.id.spinner);
-        txt_view_to = findViewById(R.id.txt_view_to);
+        findViews();
         msp = new MySharePreferences(getApplicationContext());
         worker = msp.readDataFromSP();
 
@@ -60,9 +51,10 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         elementIndex = Integer.valueOf(intent.getStringExtra("DayIndex"));
         elementDate = intent.getStringExtra("DayDate");
         myhours = worker.getHourByIndex(elementIndex, elementDate);
+
         if (myhours != null) {
-            String timeStamp = new SimpleDateFormat().format(myhours.getStart_time());
-            String timeStamp2 = new SimpleDateFormat().format(myhours.getEnd_time());
+            String timeStamp = new SimpleDateFormat("HH:mm:ss").format(myhours.getStart_time());
+            String timeStamp2 = new SimpleDateFormat("HH:mm:ss").format(myhours.getEnd_time());
             Log.i("22222222222222222", timeStamp + "  " + timeStamp2);
 
             txt_shiftInfo.setText("Choose work day");
@@ -71,12 +63,14 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
             txt_to.setText(timeStamp2);
 
             txt_view_time.setText(timeDifference(myhours.getEnd_time() - myhours.getStart_time()));
+            btn_save.setEnabled(true);
 
         } else {
             txt_shiftInfo.setText("Add work day");
             txt_shiftInfo.setTextSize(20);
             txt_from.setText("Add start time");
             txt_to.setText("Add end time");
+            btn_save.setEnabled(false);
         }
 
 
@@ -101,6 +95,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
 
         return String.format("%02d:%02d:%02d", h, m, s);
     }
+
     public void onItemSelected(AdapterView<?> parent, View view,   int pos, long id)
     {
         String item = parent.getItemAtPosition(pos).toString();
@@ -112,10 +107,13 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     Log.i("22222222222222222", "cool");
                     if(myhours != null)
                     {
-                        txt_to.setText("" + new SimpleDateFormat().format(myhours.getEnd_time()));
+                        txt_from.setText("" + new SimpleDateFormat("HH:mm:ss").format(myhours.getStart_time()));
+                        txt_to.setText("" + new SimpleDateFormat("HH:mm:ss").format(myhours.getEnd_time()));
                         txt_view_time.setText(timeDifference(myhours.getEnd_time() - myhours.getStart_time()));
                     }
-
+                    txt_from.setEnabled(true);
+                    txt_to.setEnabled(true);
+                    txt_view_from.setText("From");
                     txt_view_to.setText("To");
                     break;
 
@@ -123,31 +121,50 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     Log.i("22222222222222222", "cool2");
                     if(myhours != null)
                     {
-                        txt_to.setText("" + new SimpleDateFormat().format(myhours.getEnd_time()));
+                        txt_from.setText("" + new SimpleDateFormat("HH:mm:ss").format(myhours.getStart_time()));
+                        txt_to.setText("" + new SimpleDateFormat("HH:mm:ss").format(myhours.getEnd_time()));
                         txt_view_time.setText(timeDifference(myhours.getEnd_time() - myhours.getStart_time()));
                     }
+                    txt_from.setEnabled(true);
+                    txt_to.setEnabled(true);
                     txt_view_to.setText("To");
                     break;
 
                 case "day off(paid)":
-                    Log.i("22222222222222222", "cool3");
+                    Log.i("22222222222222222", "cool3"); if(myhours != null)
+                    if(myhours != null)
+                    {
+                        txt_from.setText(new SimpleDateFormat("dd/MM/yyyy").format(myhours.getStart_time()));
+                    }
+                    txt_from.setText("From");
                     txt_to.setText("To");
+                    txt_to.setEnabled(false);
+                    txt_from.setEnabled(false);
                     txt_view_to.setText("");
-                    txt_view_time.setText("");
+                    txt_view_from.setText("");
+                    txt_view_time.setText(elementDate);
+                    txt_remove_shift.setEnabled(true);
+                    btn_save.setEnabled(true);
                     break;
 
                 case "Sick day(paid)":
                     Log.i("22222222222222222", "cool4");
+                    if(myhours != null)
+                    {
+                        txt_from.setText(new SimpleDateFormat("dd/MM/yyyy").format(myhours.getStart_time()));
+                    }
+                    txt_from.setText("From");
                     txt_to.setText("To");
+                    txt_to.setEnabled(false);
+                    txt_from.setEnabled(false);
                     txt_view_to.setText("");
-                    txt_view_time.setText("");
+                    txt_view_from.setText("");
+                    txt_view_time.setText(elementDate);
+                    txt_remove_shift.setEnabled(true);
+                    btn_save.setEnabled(true);
                     break;
 
-
-
         }
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
@@ -160,12 +177,9 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         @Override
         public void onClick(View view)
         {
-            if(myhours != null)
-            {
-                worker.addHourByIndex(myhours , elementDate);
-                msp.writeDataToSP(worker);
-                goToGameActivity();
-            }
+            worker.addHours(elementDate , tempStartTime , tempStopTime);
+            msp.writeDataToSP(worker);
+            goToGameActivity();
         }
     };
 
@@ -192,18 +206,23 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
             int minute = mcurrentTime.get(Calendar.MINUTE);
             TimePickerDialog mTimePicker = new TimePickerDialog(txt_from.getContext(), new TimePickerDialog.OnTimeSetListener() {
                 @Override
-                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                    txt_from.setText( selectedHour + ":" + selectedMinute);
-                    String string_time = selectedHour + ":" + selectedMinute;
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
+                {
+                    timePicker.setIs24HourView(true);
+                    String string_time = timePicker.getHour() + ":" + timePicker.getMinute();
                     SimpleDateFormat f = new SimpleDateFormat("HH:mm");
-                    try {
+                    try
+                    {
                         Date d = f.parse(string_time);
                         tempStartTime = d.getTime();
-                    } catch (Exception e) {
+                        txt_from.setText("" + new SimpleDateFormat("HH:mm:ss").format(d.getTime()));
+                        myhours.setStart_time(tempStartTime);
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Log.i("22222222222222222", tempStartTime + "");
-
+                    txt_view_time.setText("");
+                    btn_save.setEnabled(false);
                 }
             }, hour, minute, false);//Yes 24 hour time
             mTimePicker.setTitle("Select Time");
@@ -224,22 +243,27 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
             TimePickerDialog mTimePicker = new TimePickerDialog(txt_from.getContext(), new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                    txt_to.setText( selectedHour + ":" + selectedMinute);
-                    String string_time = selectedHour + ":" + selectedMinute;
+                    timePicker.setIs24HourView(true);
+                    String string_time = timePicker.getHour() + ":" + timePicker.getMinute();
                     SimpleDateFormat f = new SimpleDateFormat("HH:mm");
-                    try {
+                    try
+                    {
                         Date d = f.parse(string_time);
                         tempStopTime = d.getTime();
-                    } catch (Exception e) {
+                        txt_to.setText("" + new SimpleDateFormat("HH:mm:ss").format(d.getTime()));
+                        myhours.setEnd_time(tempStopTime);
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Log.i("22222222222222222", timePicker.toString() + " " + timePicker.getMinute());
+                    txt_view_time.setText(timeDifference(tempStopTime - tempStartTime));
+                    btn_save.setEnabled(true);
 
-                    txt_view_time.setText(timeDifference(tempStopTime - tempStartTime));;
                 }
             }, hour, minute, false);//Yes 24 hour time
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
+
 
         }
     };
@@ -273,5 +297,18 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                 .setIcon(android.R.drawable.ic_delete)
                 .setCancelable(false)
                 .show();
+    }
+
+    private void findViews()
+    {
+        txt_from = findViewById(R.id.txt_from);
+        txt_to = findViewById(R.id.txt_to);
+        btn_save = findViewById(R.id.btn_save);
+        txt_view_time = findViewById(R.id.txt_view_time);
+        txt_shiftInfo = findViewById(R.id.txt_shiftInfo);
+        txt_remove_shift = findViewById(R.id.txt_remove_shift);
+        spinner = findViewById(R.id.spinner);
+        txt_view_to = findViewById(R.id.txt_view_to);
+        txt_view_from = findViewById(R.id.txt_view_from);
     }
 }

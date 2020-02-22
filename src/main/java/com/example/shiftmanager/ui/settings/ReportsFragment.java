@@ -1,34 +1,23 @@
 package com.example.shiftmanager.ui.settings;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.shiftmanager.MySharePreferences;
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.WorkerShiftCounter;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-public class SettingsFragment extends Fragment {
+public class ReportsFragment extends Fragment {
 
     private TextView txt_month , txt_year;
     private Button txt_left , txt_rigth;
@@ -39,18 +28,18 @@ public class SettingsFragment extends Fragment {
     private int currentYear = 2020;
 
     MySharePreferences msp;
-    WorkerShiftCounter myDayInfo = null;
+    WorkerShiftCounter worker = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         msp = new MySharePreferences(getActivity().getApplicationContext());
-        myDayInfo = msp.readDataFromSP();
+        worker = msp.readDataFromSP();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_settings, container, false);
+        View root = inflater.inflate(R.layout.fragment_reports, container, false);
         findViews(root);
         monthIndex = setCurrentMonth();
         txt_year.setText(currentYear + "");
@@ -107,11 +96,14 @@ public class SettingsFragment extends Fragment {
     {
         txt_month.setText( months[index] + "" );
     }
+
     private int setCurrentMonth()
     {
         Calendar calendar = Calendar.getInstance();
         int temp = calendar.get(Calendar.MONTH);
+        int temp2 = calendar.get(Calendar.YEAR);
         txt_month.setText( months[temp] + "" );
+        txt_year.setText(temp2 + "");
         return temp;
     }
 

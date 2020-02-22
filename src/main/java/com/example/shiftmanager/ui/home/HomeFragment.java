@@ -40,7 +40,6 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
     private TextView txt_currentday;
     private TextView currenttime;
     MySharePreferences msp;
@@ -74,13 +73,8 @@ public class HomeFragment extends Fragment {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        bar = root.findViewById(R.id.bar);
-        home_lineartimeclock = root.findViewById(R.id.home_lineartimeclock);
-        mChronometer = root.findViewById(R.id.simpleChronometer);
-        txt_currentday = root.findViewById(R.id.home_currentdate);
-        currenttime = root.findViewById(R.id.home_currentTime);
+        findViews(root);
 
         getCurrentDate();
         beforeStartCount();
@@ -196,4 +190,12 @@ public class HomeFragment extends Fragment {
         timerHandler.postDelayed(timerRunnable , 100);
     }
 
+    private void findViews(View root)
+    {
+        bar = root.findViewById(R.id.bar);
+        home_lineartimeclock = root.findViewById(R.id.home_lineartimeclock);
+        mChronometer = root.findViewById(R.id.simpleChronometer);
+        txt_currentday = root.findViewById(R.id.home_currentdate);
+        currenttime = root.findViewById(R.id.home_currentTime);
+    }
 }
