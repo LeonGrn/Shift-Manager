@@ -19,22 +19,19 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
+import com.example.shiftmanager.Keys;
 import com.example.shiftmanager.MyDay;
 import com.example.shiftmanager.MySharePreferences;
 import com.example.shiftmanager.MySignal;
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.WorkerShiftCounter;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -51,16 +48,11 @@ public class HomeFragment extends Fragment {
     private View bar;
     private Animation animation;
 
-    private String keyCheckExistingCount = "key_check_existing_time";
-    private String keySaveStartTime = "key_start_time";
-
     private long saveExistingCount = 0;
     private long saveStartTimeAsLong = 0;
 
     private WorkerShiftCounter worker;
     Calendar cal = Calendar.getInstance();
-
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +61,7 @@ public class HomeFragment extends Fragment {
         timeShift();
         msp = new MySharePreferences(getActivity().getApplicationContext());
         worker = msp.readDataFromSP();
-        saveStartTimeAsLong = msp.getLong(keySaveStartTime,0);
+        saveStartTimeAsLong = msp.getLong(Keys.keySaveStartTime,0);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,7 +73,7 @@ public class HomeFragment extends Fragment {
         bar.setBackgroundColor(Color.rgb(150, 2, 31));
         animation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.anim);
 
-        saveExistingCount = msp.getLong(keyCheckExistingCount,0);
+        saveExistingCount = msp.getLong(Keys.keyCheckExistingCount,0);
         if(saveExistingCount > 0)
         {
             mChronometer.setBase(saveExistingCount);
@@ -110,8 +102,8 @@ public class HomeFragment extends Fragment {
 
                     saveExistingCount = SystemClock.elapsedRealtime();
                     saveStartTimeAsLong = (new Date()).getTime();
-                    msp.putLong(keyCheckExistingCount,saveExistingCount);
-                    msp.putLong(keySaveStartTime,saveStartTimeAsLong);
+                    msp.putLong(Keys.keyCheckExistingCount,saveExistingCount);
+                    msp.putLong(Keys.keySaveStartTime,saveStartTimeAsLong);
                 }
                 else if (flagStartStop == true) //Second Click
                 {
@@ -126,14 +118,14 @@ public class HomeFragment extends Fragment {
                     Log.i("333333333333333" , " " + timeStamp);
 
                     Log.i("444444444444444" , " " + (new Date()).getTime());
-                    worker.addHours(timeStamp , saveStartTimeAsLong , (new Date()).getTime());
+                    worker.addHours(timeStamp , saveStartTimeAsLong , (new Date()).getTime() , MyDay.DayStatus.RegularDay);
                     msp.writeDataToSP(worker);
 
                     saveStartTimeAsLong = 0;
 
-                    msp.putLong(keySaveStartTime,saveStartTimeAsLong);
+                    msp.putLong(Keys.keySaveStartTime,saveStartTimeAsLong);
                     saveExistingCount = 0;
-                    msp.putLong(keyCheckExistingCount,saveExistingCount);
+                    msp.putLong(Keys.keyCheckExistingCount,saveExistingCount);
                 }
             }
             return false;

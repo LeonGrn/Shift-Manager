@@ -11,7 +11,6 @@ import static android.content.Context.MODE_PRIVATE;
 public class MySharePreferences {
 
     private SharedPreferences prefs;
-    private String keyInfoDay = "key_time_day";
 
     public MySharePreferences(Context context) {
         prefs = context.getSharedPreferences("MyPref2", MODE_PRIVATE);
@@ -57,7 +56,7 @@ public class MySharePreferences {
         WorkerShiftCounter worker = null;
         try
         {
-            worker = new Gson().fromJson(getString(keyInfoDay, ""), new TypeToken<WorkerShiftCounter>() {
+            worker = new Gson().fromJson(getString(Keys.keyInfoDay, ""), new TypeToken<WorkerShiftCounter>() {
             }.getType());
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,6 +69,6 @@ public class MySharePreferences {
 
     public void writeDataToSP(WorkerShiftCounter worker)
     {
-        putString(keyInfoDay,new Gson().toJson(worker));
+        putString(Keys.keyInfoDay,new Gson().toJson(worker));
     }
 }

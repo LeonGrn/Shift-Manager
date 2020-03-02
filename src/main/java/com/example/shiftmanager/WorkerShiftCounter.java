@@ -1,6 +1,17 @@
 package com.example.shiftmanager;
 
+import android.util.Log;
+
+import com.example.shiftmanager.ui.calendar.CalendarFragment;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class WorkerShiftCounter
 {
@@ -28,7 +39,7 @@ public class WorkerShiftCounter
         return m_arrDays;
     }
 
-    public void addHours(String szCurrentDay, long start, long stop)
+    public void addHours(String szCurrentDay, long start, long stop , MyDay.DayStatus dayStatus)
     {
         MyDay myDay = null;
         for (MyDay day : m_arrDays)
@@ -42,11 +53,31 @@ public class WorkerShiftCounter
 
         if(myDay == null)
         {
-            myDay = new MyDay(szCurrentDay);
+            myDay = new MyDay(szCurrentDay , dayStatus);
             m_arrDays.add(myDay);
         }
 
         myDay.getM_hours().add(new MyHours(start, stop));
+    }
+
+    public void addDayByStatus(String szCurrentDay, MyDay.DayStatus dayStatus)
+    {
+        MyDay myDay = null;
+        for (MyDay day : m_arrDays)
+        {
+            if (day.getDay().equals(szCurrentDay))
+            {
+                day.removeAllHours();
+                myDay = day;
+                break;
+            }
+        }
+
+        if(myDay == null)
+        {
+            myDay = new MyDay(szCurrentDay , dayStatus);
+            m_arrDays.add(myDay);
+        }
     }
 
     public MyDay getDay(String szCurrentDay)
@@ -71,21 +102,50 @@ public class WorkerShiftCounter
     public void removeHourByIndex(int index , String selectedDay)
     {
         MyDay day = getDay(selectedDay);
-        day.getM_hours().remove(index);
         if(day.getM_hours().size() == 0)
+            day.getM_hours().remove(index);
             m_arrDays.remove(day);
     }
 
-    public long getTotalMonthHour()
+    public long[] getTotalMonthHour(String szDate)
     {
+        long[] monthInfo = new long[5];
         long totalHours = 0;
-        for(int i = 0 ; i < getArrDays().size() ; i++)
+        long totalworkedDays = 0;
+        long sickDays = 0;
+        long daysOff = 0;
+        long workOnRestOff = 0;
+        for(int i = 0 ; i < m_arrDays.size() ; i++)
         {
-            for(int j = 0 ; j < getArrDays().get(i).getM_hours().size() ; j++)
+            Log.i("35555555" , m_arrDays.get(i).getDay());
+            if(m_arrDays.get(i).getDay().contains(szDate) == true)
             {
-                totalHours += getArrDays().get(i).getM_hours().get(j).getTotal_time();
+                if(m_arrDays.get(i).getM_dayStatus() == MyDay.DayStatus.RegularDay)
+                    totalworkedDays++;
+                if(m_arrDays.get(i).getM_dayStatus() == MyDay.DayStatus.SickDay)
+                    sickDays++;
+                if(m_arrDays.get(i).getM_dayStatus() == MyDay.DayStatus.DayOff)
+                    daysOff++;
+                if(m_arrDays.get(i).getM_dayStatus() == MyDay.DayStatus.WorkOnRestDay)
+                    workOnRestOff++;
+
+                for (int j = 0; j < m_arrDays.get(i).getM_hours().size(); j++)
+                {
+                    totalHours += m_arrDays.get(i).getM_hours().get(j).getTotal_time();
+                }
             }
         }
-        return totalHours;
+
+        monthInfo[0] = totalworkedDays;
+        monthInfo[1] = totalHours;
+        monthInfo[2] = sickDays;
+        monthInfo[3] = daysOff;
+        monthInfo[4] = workOnRestOff;
+
+        for(int i = 0 ; i < monthInfo.length ; i++)
+        {
+            Log.i("6666666666" ,""+ monthInfo[i]);
+        }
+        return monthInfo;
     }
 }

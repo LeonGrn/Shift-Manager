@@ -1,8 +1,6 @@
 package com.example.shiftmanager.ui.calendar;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CalendarView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,24 +15,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.shiftmanager.EditShiftActivity;
 import com.example.shiftmanager.MyAdapter;
 import com.example.shiftmanager.MyAdapterAddShift;
 import com.example.shiftmanager.MyDay;
-import com.example.shiftmanager.MyHours;
 import com.example.shiftmanager.MySharePreferences;
 import com.example.shiftmanager.R;
+import com.example.shiftmanager.SetAdapterSickDay;
+import com.example.shiftmanager.SetAdapterDayoff;
 import com.example.shiftmanager.WorkerShiftCounter;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
 
 public class CalendarFragment extends Fragment {
 
@@ -45,16 +39,13 @@ public class CalendarFragment extends Fragment {
     private ListView listView;
     private MyAdapter adapter;
     private MyAdapterAddShift adapter2;
+    private SetAdapterDayoff adapter3;
+    private SetAdapterSickDay adapter4;
     Calendar cal = Calendar.getInstance();
-    private ArrayList<TextView> addShift;
+    private ArrayList<TextView> addShift , setDayStatus ;
     private String currentDay = null;
     private String lDate = "";
     private long startDate = 0;
-
-    enum DayStatus
-    {
-        RegularDay , WorkOnRestDay , DayOff, SickDay
-    }
 
     public CalendarFragment() {
         super();
@@ -118,7 +109,7 @@ public class CalendarFragment extends Fragment {
         MyDay myDay = myDayInfo.getDay(timeStamp);
         currentDay = timeStamp;
 
-        if (myDay != null)
+        if (myDay != null && (myDay.getM_dayStatus() == MyDay.DayStatus.RegularDay || myDay.getM_dayStatus() == MyDay.DayStatus.WorkOnRestDay))
         {
             adapter = new MyAdapter(getActivity().getApplicationContext(), myDay.getM_hours());
             listView.setAdapter(adapter);
@@ -137,6 +128,20 @@ public class CalendarFragment extends Fragment {
                     (getActivity()).overridePendingTransition(0, 0);
                 }
             });
+        }
+        else if(myDay != null && myDay.getM_dayStatus() == MyDay.DayStatus.SickDay)
+        {
+            setDayStatus = new ArrayList<>();
+            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
+            adapter4 = new SetAdapterSickDay(getActivity().getApplicationContext(), setDayStatus);
+            listView.setAdapter(adapter4);
+        }
+        else if(myDay != null && myDay.getM_dayStatus() == MyDay.DayStatus.DayOff)
+        {
+            setDayStatus = new ArrayList<>();
+            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
+            adapter3 = new SetAdapterDayoff(getActivity().getApplicationContext(), setDayStatus);
+            listView.setAdapter(adapter3);
         }
         else
             setAddShiftTxt();

@@ -38,6 +38,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
     private long tempStartTime = 0;
     private long tempStopTime = 0;
     MySharePreferences msp;
+    private MyDay.DayStatus choosenStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,30 +108,33 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     Log.i("22222222222222222", "cool");
                     if(myhours != null)
                     {
-                        txt_from.setText("" + new SimpleDateFormat("HH:mm:ss").format(myhours.getStart_time()));
-                        txt_to.setText("" + new SimpleDateFormat("HH:mm:ss").format(myhours.getEnd_time()));
+                        txt_from.setText("" + new SimpleDateFormat("HH:mm").format(myhours.getStart_time()));
+                        txt_to.setText("" + new SimpleDateFormat("HH:mm").format(myhours.getEnd_time()));
                         txt_view_time.setText(timeDifference(myhours.getEnd_time() - myhours.getStart_time()));
                     }
                     txt_from.setEnabled(true);
                     txt_to.setEnabled(true);
                     txt_view_from.setText("From");
                     txt_view_to.setText("To");
+                    choosenStatus = MyDay.DayStatus.RegularDay;
                     break;
 
                 case "Work on a rest day":
                     Log.i("22222222222222222", "cool2");
                     if(myhours != null)
                     {
-                        txt_from.setText("" + new SimpleDateFormat("HH:mm:ss").format(myhours.getStart_time()));
-                        txt_to.setText("" + new SimpleDateFormat("HH:mm:ss").format(myhours.getEnd_time()));
+                        txt_from.setText("" + new SimpleDateFormat("HH:mm").format(myhours.getStart_time()));
+                        txt_to.setText("" + new SimpleDateFormat("HH:mm").format(myhours.getEnd_time()));
                         txt_view_time.setText(timeDifference(myhours.getEnd_time() - myhours.getStart_time()));
                     }
                     txt_from.setEnabled(true);
                     txt_to.setEnabled(true);
+                    txt_view_from.setText("From");
                     txt_view_to.setText("To");
+                    choosenStatus = MyDay.DayStatus.WorkOnRestDay;
                     break;
 
-                case "day off(paid)":
+                case "Day off(paid)":
                     Log.i("22222222222222222", "cool3"); if(myhours != null)
                     if(myhours != null)
                     {
@@ -145,6 +149,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     txt_view_time.setText(elementDate);
                     txt_remove_shift.setEnabled(true);
                     btn_save.setEnabled(true);
+                    choosenStatus = MyDay.DayStatus.DayOff;
                     break;
 
                 case "Sick day(paid)":
@@ -162,6 +167,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     txt_view_time.setText(elementDate);
                     txt_remove_shift.setEnabled(true);
                     btn_save.setEnabled(true);
+                    choosenStatus = MyDay.DayStatus.SickDay;
                     break;
 
         }
@@ -177,9 +183,18 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         @Override
         public void onClick(View view)
         {
-            worker.addHours(elementDate , tempStartTime , tempStopTime);
-            msp.writeDataToSP(worker);
-            goToGameActivity();
+            if(myhours == null && (choosenStatus == MyDay.DayStatus.WorkOnRestDay || choosenStatus == MyDay.DayStatus.WorkOnRestDay))
+            {
+                worker.addHours(elementDate , tempStartTime , tempStopTime , choosenStatus);
+                msp.writeDataToSP(worker);
+                goToGameActivity();
+            }
+            else
+            {
+                worker.addDayByStatus(elementDate , choosenStatus);
+                msp.writeDataToSP(worker);
+                goToGameActivity();
+            }
         }
     };
 

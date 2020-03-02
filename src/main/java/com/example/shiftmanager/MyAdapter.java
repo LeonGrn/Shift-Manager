@@ -17,6 +17,7 @@ public class MyAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<MyHours> arrayList;
     private TextView startTime, endTime;
+    private MyDay myday;
 
     public MyAdapter(Context context, ArrayList<MyHours> arrayList) {
         this.context = context;
