@@ -1,6 +1,7 @@
 package com.example.shiftmanager.ui.settings;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +46,7 @@ public class ReportsFragment extends Fragment {
         findViews(root);
         monthIndex = setCurrentMonth();
         txt_year.setText(currentYear + "");
-        updateMonth(String.format("%02d/%d", monthIndex+1,currentYear));
-
-
+        updateMonth(String.format("%02d/%d", monthIndex + 1 ,currentYear));
 
         txt_left.setOnClickListener(move);
         txt_rigth.setOnClickListener(move);

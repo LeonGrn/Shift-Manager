@@ -46,6 +46,8 @@ public class CalendarFragment extends Fragment {
     private String currentDay = null;
     private String lDate = "";
     private long startDate = 0;
+    private MyDay myDay;
+
 
     public CalendarFragment() {
         super();
@@ -69,7 +71,6 @@ public class CalendarFragment extends Fragment {
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth)
             {
                 setAddShiftTxt();
-
 
                 startDate = 0;
                 try
@@ -101,50 +102,54 @@ public class CalendarFragment extends Fragment {
         listView.setAdapter(adapter2);
     }
 
-
     private void initList(long lDay)
     {
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(lDay);
         lDate = timeStamp;
-        MyDay myDay = myDayInfo.getDay(timeStamp);
+        myDay = myDayInfo.getDay(timeStamp);
         currentDay = timeStamp;
+        setDayStatus = new ArrayList<>();
+        setDayStatus.add(new TextView(getActivity().getApplicationContext()));
 
         if (myDay != null && (myDay.getM_dayStatus() == MyDay.DayStatus.RegularDay || myDay.getM_dayStatus() == MyDay.DayStatus.WorkOnRestDay))
         {
             adapter = new MyAdapter(getActivity().getApplicationContext(), myDay.getM_hours());
             listView.setAdapter(adapter);
 
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-                {
-                    Intent intent = new Intent(getActivity(), EditShiftActivity.class);
-
-                    intent.putExtra("DayIndex", listView.getItemAtPosition(i).toString());
-                    intent.putExtra("DayDate", lDate);
-
-                    startActivity(intent);
-                    (getActivity()).overridePendingTransition(0, 0);
-                }
-            });
         }
         else if(myDay != null && myDay.getM_dayStatus() == MyDay.DayStatus.SickDay)
         {
-            setDayStatus = new ArrayList<>();
-            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
+//            setDayStatus = new ArrayList<>();
+//            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
             adapter4 = new SetAdapterSickDay(getActivity().getApplicationContext(), setDayStatus);
             listView.setAdapter(adapter4);
         }
         else if(myDay != null && myDay.getM_dayStatus() == MyDay.DayStatus.DayOff)
         {
-            setDayStatus = new ArrayList<>();
-            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
+//            setDayStatus = new ArrayList<>();
+//            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
             adapter3 = new SetAdapterDayoff(getActivity().getApplicationContext(), setDayStatus);
             listView.setAdapter(adapter3);
         }
         else
             setAddShiftTxt();
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                Intent intent = new Intent(getActivity(), EditShiftActivity.class);
+
+                intent.putExtra("DayIndex", listView.getItemAtPosition(i).toString());
+                intent.putExtra("DayDate", lDate);
+                intent.putExtra("DayStatus", myDay.getM_dayStatus());
+
+                startActivity(intent);
+                (getActivity()).overridePendingTransition(0, 0);
+            }
+        });
     }
 
 

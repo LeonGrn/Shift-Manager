@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment {
 
                     msp.putLong(Keys.keySaveStartTime,saveStartTimeAsLong);
                     saveExistingCount = 0;
-                    msp.putLong(Keys.keyCheckExistingCount,saveExistingCount);
+                    msp.putLong(Keys.keyCheckExistingCount , saveExistingCount);
                 }
             }
             return false;

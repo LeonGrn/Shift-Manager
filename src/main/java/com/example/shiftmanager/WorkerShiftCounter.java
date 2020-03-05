@@ -1,17 +1,6 @@
 package com.example.shiftmanager;
 
-import android.util.Log;
-
-import com.example.shiftmanager.ui.calendar.CalendarFragment;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class WorkerShiftCounter
 {
@@ -68,7 +57,6 @@ public class WorkerShiftCounter
             if (day.getDay().equals(szCurrentDay))
             {
                 day.removeAllHours();
-                myDay = day;
                 break;
             }
         }
@@ -104,24 +92,29 @@ public class WorkerShiftCounter
         MyDay day = getDay(selectedDay);
         if(day.getM_hours().size() == 0)
             day.getM_hours().remove(index);
-            m_arrDays.remove(day);
+        m_arrDays.remove(day);
+    }
+
+    public void removeDayIndex(String selectedDay)
+    {
+        MyDay day = getDay(selectedDay);
+        m_arrDays.remove(day);
     }
 
     public long[] getTotalMonthHour(String szDate)
     {
         long[] monthInfo = new long[5];
         long totalHours = 0;
-        long totalworkedDays = 0;
+        long workOnRegularDay = 0;
         long sickDays = 0;
         long daysOff = 0;
         long workOnRestOff = 0;
         for(int i = 0 ; i < m_arrDays.size() ; i++)
         {
-            Log.i("35555555" , m_arrDays.get(i).getDay());
             if(m_arrDays.get(i).getDay().contains(szDate) == true)
             {
                 if(m_arrDays.get(i).getM_dayStatus() == MyDay.DayStatus.RegularDay)
-                    totalworkedDays++;
+                    workOnRegularDay++;
                 if(m_arrDays.get(i).getM_dayStatus() == MyDay.DayStatus.SickDay)
                     sickDays++;
                 if(m_arrDays.get(i).getM_dayStatus() == MyDay.DayStatus.DayOff)
@@ -136,16 +129,12 @@ public class WorkerShiftCounter
             }
         }
 
-        monthInfo[0] = totalworkedDays;
+        monthInfo[0] = workOnRegularDay;
         monthInfo[1] = totalHours;
         monthInfo[2] = sickDays;
         monthInfo[3] = daysOff;
         monthInfo[4] = workOnRestOff;
 
-        for(int i = 0 ; i < monthInfo.length ; i++)
-        {
-            Log.i("6666666666" ,""+ monthInfo[i]);
-        }
         return monthInfo;
     }
 }

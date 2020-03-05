@@ -31,7 +31,6 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
     private TextView txt_remove_shift , txt_shiftInfo , txt_view_time , txt_view_to , txt_view_from;
     private WorkerShiftCounter worker;
     private Spinner spinner;
-    private MyAdapter adapter;
     private int elementIndex = -1;
     private String elementDate = "";
     private MyHours myhours = null;
@@ -51,12 +50,13 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         Intent intent = getIntent();
         elementIndex = Integer.valueOf(intent.getStringExtra("DayIndex"));
         elementDate = intent.getStringExtra("DayDate");
+        choosenStatus = (MyDay.DayStatus) intent.getSerializableExtra("DayStatus");
         myhours = worker.getHourByIndex(elementIndex, elementDate);
 
-        if (myhours != null) {
+        if (choosenStatus == MyDay.DayStatus.RegularDay || choosenStatus == MyDay.DayStatus.WorkOnRestDay)
+        {
             String timeStamp = new SimpleDateFormat("HH:mm:ss").format(myhours.getStart_time());
             String timeStamp2 = new SimpleDateFormat("HH:mm:ss").format(myhours.getEnd_time());
-            Log.i("22222222222222222", timeStamp + "  " + timeStamp2);
 
             txt_shiftInfo.setText("Choose work day");
             txt_shiftInfo.setTextSize(20);
@@ -66,12 +66,27 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
             txt_view_time.setText(timeDifference(myhours.getEnd_time() - myhours.getStart_time()));
             btn_save.setEnabled(true);
 
-        } else {
+        }
+        else if(choosenStatus == MyDay.DayStatus.SickDay || choosenStatus == MyDay.DayStatus.DayOff)
+        {
+            txt_shiftInfo.setText("Add work day");
+            txt_shiftInfo.setTextSize(20);
+            txt_to.setEnabled(false);
+            txt_from.setEnabled(false);
+            txt_view_to.setText("");
+            txt_view_from.setText("");
+            txt_view_time.setText(elementDate);
+            txt_remove_shift.setEnabled(true);
+            btn_save.setEnabled(true);
+        }
+        else
+        {
             txt_shiftInfo.setText("Add work day");
             txt_shiftInfo.setTextSize(20);
             txt_from.setText("Add start time");
             txt_to.setText("Add end time");
             btn_save.setEnabled(false);
+            txt_remove_shift.setEnabled(false);
         }
 
 
@@ -79,11 +94,11 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-
         btn_save.setOnClickListener(saveShift);
         txt_remove_shift.setOnClickListener(removeShift);
         txt_from.setOnClickListener(setTimeFrom);
         txt_to.setOnClickListener(setTimeTo);
+
         spinner.setOnItemSelectedListener(this);
     }
 
@@ -183,7 +198,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         @Override
         public void onClick(View view)
         {
-            if(myhours == null && (choosenStatus == MyDay.DayStatus.WorkOnRestDay || choosenStatus == MyDay.DayStatus.WorkOnRestDay))
+            if(myhours == null && (choosenStatus == MyDay.DayStatus.WorkOnRestDay || choosenStatus == MyDay.DayStatus.RegularDay))
             {
                 worker.addHours(elementDate , tempStartTime , tempStopTime , choosenStatus);
                 msp.writeDataToSP(worker);
@@ -203,7 +218,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         @Override
         public void onClick(View view)
         {
-            if(myhours != null)
+            if(choosenStatus != null)
             {
                 openAlertDialog();
             }
@@ -297,10 +312,21 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                 .setMessage("Are you sure you want to delete this entry?")
 
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        worker.removeHourByIndex(elementIndex , elementDate);
-                        msp.writeDataToSP(worker);
-                        goToGameActivity();
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if((choosenStatus == MyDay.DayStatus.WorkOnRestDay || choosenStatus == MyDay.DayStatus.RegularDay))
+                        {
+                            worker.removeHourByIndex(elementIndex , elementDate);
+                            msp.writeDataToSP(worker);
+                            goToGameActivity();
+                        }
+                        else
+                        {
+                            worker.removeDayIndex(elementDate);
+                            msp.writeDataToSP(worker);
+                            goToGameActivity();
+                        }
+
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

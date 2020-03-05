@@ -100,7 +100,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginTop="20dp"
                 android:textStyle="bold"
-                android:text="Total worked days :  " />
+                android:text="Work on Regular day :  " />
 
             <TextView
                 android:id="@+id/txt_worked_days_number"
