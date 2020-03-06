@@ -46,7 +46,7 @@ public class CalendarFragment extends Fragment {
     private String currentDay = null;
     private String lDate = "";
     private long startDate = 0;
-    private MyDay myDay;
+    private MyDay myDay = null;
 
 
     public CalendarFragment() {
@@ -81,7 +81,6 @@ public class CalendarFragment extends Fragment {
                     Date date = sdf.parse(dateString);
 
                     startDate = date.getTime();
-
                 }
                 catch (Exception e)
                 {
@@ -144,7 +143,9 @@ public class CalendarFragment extends Fragment {
 
                 intent.putExtra("DayIndex", listView.getItemAtPosition(i).toString());
                 intent.putExtra("DayDate", lDate);
-                intent.putExtra("DayStatus", myDay.getM_dayStatus());
+
+                if(myDay != null)
+                    intent.putExtra("DayStatus", myDay.getM_dayStatus());
 
                 startActivity(intent);
                 (getActivity()).overridePendingTransition(0, 0);
@@ -178,13 +179,34 @@ public class CalendarFragment extends Fragment {
     public void onResume()
     {
         Log.i("onResume" , "Resume");
-        msp = new MySharePreferences(getActivity().getApplicationContext());
+        //msp = new MySharePreferences(getActivity().getApplicationContext());
         myDayInfo = msp.readDataFromSP();
-        setAddShiftTxt();
-        if(startDate != 0)
-            initList(startDate);
+        myDay = myDayInfo.getDay(lDate);
+        if(myDay != null)
+        {
+            if(myDay.getM_dayStatus() == MyDay.DayStatus.RegularDay || myDay.getM_dayStatus() == MyDay.DayStatus.WorkOnRestDay)
+            {
+                adapter = new MyAdapter(getActivity().getApplicationContext(), myDay.getM_hours());
+                listView.setAdapter(adapter);
+            }
+            else if(myDay.getM_dayStatus() == MyDay.DayStatus.DayOff )
+            {
+                adapter3 = new SetAdapterDayoff(getActivity().getApplicationContext(), setDayStatus);
+                listView.setAdapter(adapter3);
+            }
+            else if(myDay.getM_dayStatus() == MyDay.DayStatus.SickDay )
+            {
+                adapter4 = new SetAdapterSickDay(getActivity().getApplicationContext(), setDayStatus);
+                listView.setAdapter(adapter4);
+            }
+        }
         else
             initList(cal.getTimeInMillis());
+
+//        if(startDate != 0)
+//            initList(startDate);
+//        else
+//            initList(cal.getTimeInMillis());
 
         super.onResume();
     }

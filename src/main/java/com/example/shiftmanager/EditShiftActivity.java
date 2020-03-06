@@ -200,12 +200,14 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
         {
             if(myhours == null && (choosenStatus == MyDay.DayStatus.WorkOnRestDay || choosenStatus == MyDay.DayStatus.RegularDay))
             {
+                worker.removeDayIndex(elementDate);
                 worker.addHours(elementDate , tempStartTime , tempStopTime , choosenStatus);
                 msp.writeDataToSP(worker);
                 goToGameActivity();
             }
             else
             {
+                worker.removeDayIndex(elementDate);
                 worker.addDayByStatus(elementDate , choosenStatus);
                 msp.writeDataToSP(worker);
                 goToGameActivity();
@@ -316,7 +318,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     {
                         if((choosenStatus == MyDay.DayStatus.WorkOnRestDay || choosenStatus == MyDay.DayStatus.RegularDay))
                         {
-                            worker.removeHourByIndex(elementIndex , elementDate);
+                            worker.removeDayIndex(elementDate);
                             msp.writeDataToSP(worker);
                             goToGameActivity();
                         }

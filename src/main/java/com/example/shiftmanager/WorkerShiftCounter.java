@@ -87,14 +87,6 @@ public class WorkerShiftCounter
         return null;
     }
 
-    public void removeHourByIndex(int index , String selectedDay)
-    {
-        MyDay day = getDay(selectedDay);
-        if(day.getM_hours().size() == 0)
-            day.getM_hours().remove(index);
-        m_arrDays.remove(day);
-    }
-
     public void removeDayIndex(String selectedDay)
     {
         MyDay day = getDay(selectedDay);
