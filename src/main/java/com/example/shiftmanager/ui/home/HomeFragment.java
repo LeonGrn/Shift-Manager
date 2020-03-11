@@ -25,6 +25,7 @@ import com.example.shiftmanager.MyDay;
 import com.example.shiftmanager.MySharePreferences;
 import com.example.shiftmanager.MySignal;
 import com.example.shiftmanager.R;
+import com.example.shiftmanager.UserDBManager;
 import com.example.shiftmanager.WorkerShiftCounter;
 
 
@@ -52,6 +53,8 @@ public class HomeFragment extends Fragment {
     private long saveStartTimeAsLong = 0;
 
     private WorkerShiftCounter worker;
+    private UserDBManager mUserDBManager;
+
     Calendar cal = Calendar.getInstance();
 
     @Override
@@ -147,7 +150,7 @@ public class HomeFragment extends Fragment {
         flagStartStop = false;
         mChronometer.setTextSize(25);
         mChronometer.setTypeface(null, Typeface.BOLD_ITALIC);
-        mChronometer.setText("Welcome, Leon");
+        mChronometer.setText("Welcome, " + worker.getName());
     }
 
 

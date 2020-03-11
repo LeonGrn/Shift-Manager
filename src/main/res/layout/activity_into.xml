@@ -7,33 +7,88 @@
     android:background="#0A2B64"
     tools:context="com.example.shiftmanager.IntoActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="256dp"
-        android:layout_alignParentStart="true"
+    <LinearLayout
+        android:id="@+id/into_LAY_linear"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="270dp"
+        android:alpha="0"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="51dp"
-        android:layout_marginTop="134dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="341dp"
-        app:srcCompat="@drawable/ic_fingerprint" />
+        <TextView
+            android:id="@+id/into_TXT_welcomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome!\nEnter your phone number and sign-in."
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+
+        <ss.anoop.awesometextinputlayout.AwesomeTextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:padding="16dp"
+            app:animationDuration="200"
+            app:borderColor="#ffffff"
+            app:borderWidth="2dp"
+            app:cornerRadius="8dp">
+
+            <EditText
+                android:id="@+id/SignIn_txt_phoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Phone number"
+                android:textColorHint="#ffffff"
+                android:ems="10"
+                android:inputType="phone"
+                android:textColor="#ffffff" />
+
+
+        </ss.anoop.awesometextinputlayout.AwesomeTextInputLayout>
+
+        <Button
+            android:id="@+id/into_btn_go"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_send"/>
+        <TextView
+            android:id="@+id/or_txt_or"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="OR"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+        <Button
+            android:id="@+id/into_btn_signup"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_corner_bg"
+            android:text="SignUp"
+            android:textAllCaps="false"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/into_IMG_logo"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/ic_background_round"
+        android:padding="50dp"
+        android:src="@drawable/ic_pressfinger" />
 
     <ProgressBar
-        android:id="@+id/intro_progressbar"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:theme="@style/progressBarBlue"
-
-    android:layout_alignParentBottom="true"
+        android:id="@+id/intro_BAR_progress"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="150dp">
-
-    </ProgressBar>
-
+        android:layout_marginBottom="30dp"
+        android:indeterminateTint="#ffffff"
+        />
 
 </RelativeLayout>

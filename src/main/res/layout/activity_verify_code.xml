@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2482C7"
+    tools:context=".VerifyCodeActivity">
+
+    <TextView
+        android:id="@+id/SignUp_TXT_enterCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Please enter the code you\nreceived in the SMS:"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:layout_marginTop="180dp"/>
+
+    <com.raycoarana.codeinputview.CodeInputView
+        android:id="@+id/VerifyCode_TXT_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:underline_color="#ffffff"
+        app:underline_selected_color="#ffffff"
+        app:code_text_color="#ffffff"
+        app:error_color="#77ce9d"
+        app:input_type="numeric"
+        app:length_of_code="6"
+        android:layout_centerInParent="true"
+        app:animate_on_complete="false"
+        />
+
+    <Button
+        android:id="@+id/SignUp_BTN_signup"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="180dp"
+        android:background="@drawable/ic_corner_bg"
+        android:text="Let's Go!"
+        android:textAllCaps="false"
+        android:textColor="#ffffff" />
+
+
+
+</RelativeLayout>

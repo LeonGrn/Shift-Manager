@@ -4,23 +4,38 @@ import java.util.ArrayList;
 
 public class WorkerShiftCounter
 {
-    private int id;
+    private String id;
+    private String name;
     private ArrayList<MyDay> m_arrDays;
 
-    public WorkerShiftCounter(int id)
+    public WorkerShiftCounter(String id , String name)
     {
         this.id = id;
+        this.name = name;
         this.m_arrDays = new ArrayList<>();
     }
 
-    public int getId()
+    public WorkerShiftCounter()
+    {
+    }
+    public String getId()
     {
         return id;
     }
 
-    public void setId(int id)
+    public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String id)
+    {
+        this.name = name;
     }
 
     public ArrayList<MyDay> getArrDays()

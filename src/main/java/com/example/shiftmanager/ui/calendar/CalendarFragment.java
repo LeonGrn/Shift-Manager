@@ -1,7 +1,9 @@
 package com.example.shiftmanager.ui.calendar;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +88,7 @@ public class CalendarFragment extends Fragment {
                 {
                     e.printStackTrace();
                 }
+
                 initList(startDate);
             }
         });
