@@ -1,9 +1,7 @@
 package com.example.shiftmanager.ui.calendar;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +24,7 @@ import com.example.shiftmanager.MySharePreferences;
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.SetAdapterSickDay;
 import com.example.shiftmanager.SetAdapterDayoff;
+import com.example.shiftmanager.UserDBManager;
 import com.example.shiftmanager.WorkerShiftCounter;
 
 import java.text.SimpleDateFormat;
@@ -37,7 +36,7 @@ public class CalendarFragment extends Fragment {
 
     private CalendarView calendarView;
     MySharePreferences msp;
-    WorkerShiftCounter myDayInfo = null;
+    WorkerShiftCounter worker = null;
     private ListView listView;
     private MyAdapter adapter;
     private MyAdapterAddShift adapter2;
@@ -49,6 +48,7 @@ public class CalendarFragment extends Fragment {
     private String lDate = "";
     private long startDate = 0;
     private MyDay myDay = null;
+    private UserDBManager mUserDBManager;
 
 
     public CalendarFragment() {
@@ -60,8 +60,10 @@ public class CalendarFragment extends Fragment {
     {
         Log.i("OnCreate" , "Create");
         msp = new MySharePreferences(getActivity().getApplicationContext());
-        myDayInfo = msp.readDataFromSP();
+        worker = msp.readDataFromSP();
         super.onCreate(savedInstanceState);
+        mUserDBManager = new UserDBManager(getActivity().getApplicationContext());
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -106,9 +108,10 @@ public class CalendarFragment extends Fragment {
 
     private void initList(long lDay)
     {
+        //setAddShiftTxt();
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(lDay);
         lDate = timeStamp;
-        myDay = myDayInfo.getDay(timeStamp);
+        myDay = worker.getDay(timeStamp);
         currentDay = timeStamp;
         setDayStatus = new ArrayList<>();
         setDayStatus.add(new TextView(getActivity().getApplicationContext()));
@@ -119,14 +122,14 @@ public class CalendarFragment extends Fragment {
             listView.setAdapter(adapter);
 
         }
-        else if(myDay != null && myDay.getM_dayStatus() == MyDay.DayStatus.SickDay)
+        else if(myDay != null && (myDay.getM_dayStatus() == MyDay.DayStatus.SickDay))
         {
 //            setDayStatus = new ArrayList<>();
 //            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
             adapter4 = new SetAdapterSickDay(getActivity().getApplicationContext(), setDayStatus);
             listView.setAdapter(adapter4);
         }
-        else if(myDay != null && myDay.getM_dayStatus() == MyDay.DayStatus.DayOff)
+        else if(myDay != null && (myDay.getM_dayStatus() == MyDay.DayStatus.DayOff))
         {
 //            setDayStatus = new ArrayList<>();
 //            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
@@ -183,8 +186,10 @@ public class CalendarFragment extends Fragment {
     {
         Log.i("onResume" , "Resume");
         //msp = new MySharePreferences(getActivity().getApplicationContext());
-        myDayInfo = msp.readDataFromSP();
-        myDay = myDayInfo.getDay(lDate);
+        worker = msp.readDataFromSP();
+        mUserDBManager.saveValveToUser(worker);
+        myDay = worker.getDay(lDate);
+
         if(myDay != null)
         {
             if(myDay.getM_dayStatus() == MyDay.DayStatus.RegularDay || myDay.getM_dayStatus() == MyDay.DayStatus.WorkOnRestDay)
@@ -202,6 +207,7 @@ public class CalendarFragment extends Fragment {
                 adapter4 = new SetAdapterSickDay(getActivity().getApplicationContext(), setDayStatus);
                 listView.setAdapter(adapter4);
             }
+
         }
         else
             initList(cal.getTimeInMillis());

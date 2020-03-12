@@ -57,7 +57,7 @@ public class IntoActivity extends AppCompatActivity
             finish();
         }
 
-        msp.putInt(Keys.USER_LOGGED_IN, 1);
+
 
         into_btn_go.setOnClickListener(signInListener);
         into_btn_signup.setOnClickListener(signUpListener);

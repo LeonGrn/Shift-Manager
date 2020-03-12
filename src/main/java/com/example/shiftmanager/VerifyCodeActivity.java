@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
     private CodeInputView VerifyCode_TXT_code;
     private UserDBManager mUserDBManager;
     private String mobileNumber, firstName, lastName;
+    MySharePreferences msp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +39,15 @@ public class VerifyCodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_verify_code);
 
         init();
+        msp = new MySharePreferences(getApplication().getApplicationContext());
         //getting mobile number from the previous activity
         //and sending the verification code to the number
         Intent intent = getIntent();
         mobileNumber = intent.getStringExtra("mobile");
         firstName = intent.getStringExtra("firstName");
         lastName = intent.getStringExtra("lastName");
+        msp.putString(Keys.CREATE_USER , mobileNumber);
+        msp.putString(Keys.SAVE_NAME , firstName);
 
         sendVerificationCode(mobileNumber);
 

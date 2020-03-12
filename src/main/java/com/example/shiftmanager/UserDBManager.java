@@ -62,8 +62,6 @@ public class UserDBManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-//                    worker = dataSnapshot.getValue(WorkerShiftCounter.class);
-
                     moveToAnotherActivity(mobileNumber, VerifyCodeActivity.class);
                 } else {
                     Toast.makeText(mContext, "User not exist. Sign-up Please!", Toast.LENGTH_SHORT).show();
@@ -98,8 +96,8 @@ public class UserDBManager {
     /**
      * @param user
      */
-    public void saveValveArrayListToUser(WorkerShiftCounter user) {
-        mUsersDB.child(user.getId() + "").setValue(user.getArrDays()).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public void saveValveToUser(WorkerShiftCounter user) {
+        mUsersDB.child(user.getId()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {

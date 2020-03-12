@@ -154,6 +154,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     if(myhours != null)
                     {
                         txt_from.setText(new SimpleDateFormat("dd/MM/yyyy").format(myhours.getStart_time()));
+                        txt_remove_shift.setEnabled(true);
                     }
                     txt_from.setText("From");
                     txt_to.setText("To");
@@ -162,7 +163,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     txt_view_to.setText("");
                     txt_view_from.setText("");
                     txt_view_time.setText(elementDate);
-                    txt_remove_shift.setEnabled(true);
+                    txt_remove_shift.setEnabled(false);
                     btn_save.setEnabled(true);
                     choosenStatus = MyDay.DayStatus.DayOff;
                     break;
@@ -172,6 +173,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     if(myhours != null)
                     {
                         txt_from.setText(new SimpleDateFormat("dd/MM/yyyy").format(myhours.getStart_time()));
+                        txt_remove_shift.setEnabled(true);
                     }
                     txt_from.setText("From");
                     txt_to.setText("To");
@@ -180,7 +182,7 @@ public class EditShiftActivity extends AppCompatActivity implements AdapterView.
                     txt_view_to.setText("");
                     txt_view_from.setText("");
                     txt_view_time.setText(elementDate);
-                    txt_remove_shift.setEnabled(true);
+                    txt_remove_shift.setEnabled(false);
                     btn_save.setEnabled(true);
                     choosenStatus = MyDay.DayStatus.SickDay;
                     break;

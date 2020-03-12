@@ -62,7 +62,7 @@ public class MySharePreferences {
             e.printStackTrace();
         }
         if(worker == null)
-            worker = new WorkerShiftCounter(getString("personalID" ,  "0544832082" ) , "");
+            worker = new WorkerShiftCounter(getString(Keys.CREATE_USER ,  "" ) , getString(Keys.SAVE_NAME , ""));
 
         return  worker;
     }

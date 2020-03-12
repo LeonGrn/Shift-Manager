@@ -62,9 +62,12 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         flagStartStop = true;
         timeShift();
+        mUserDBManager = new UserDBManager(getActivity().getApplicationContext());
         msp = new MySharePreferences(getActivity().getApplicationContext());
         worker = msp.readDataFromSP();
         saveStartTimeAsLong = msp.getLong(Keys.keySaveStartTime,0);
+        msp.putInt(Keys.USER_LOGGED_IN, 1);
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -123,6 +126,7 @@ public class HomeFragment extends Fragment {
                     Log.i("444444444444444" , " " + (new Date()).getTime());
                     worker.addHours(timeStamp , saveStartTimeAsLong , (new Date()).getTime() , MyDay.DayStatus.RegularDay);
                     msp.writeDataToSP(worker);
+                    mUserDBManager.saveValveToUser(worker);
 
                     saveStartTimeAsLong = 0;
 
