@@ -1,10 +1,13 @@
 package com.example.shiftmanager;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class WorkerShiftCounter
 {
-    private String id;
+    private String id ;
     private String name;
     private ArrayList<MyDay> m_arrDays;
 
@@ -18,6 +21,7 @@ public class WorkerShiftCounter
     public WorkerShiftCounter()
     {
     }
+
     public String getId()
     {
         return id;
@@ -143,5 +147,14 @@ public class WorkerShiftCounter
         monthInfo[4] = workOnRestOff;
 
         return monthInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "WorkerShiftCounter{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", m_arrDays=" + m_arrDays +
+                '}';
     }
 }

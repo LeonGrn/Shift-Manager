@@ -6,6 +6,10 @@ public class MyHours
     private long m_start_time;
     private long m_end_time;
 
+    public MyHours()
+    {
+    }
+
     public MyHours(long start_time, long end_time)
     {
         m_start_time = start_time;

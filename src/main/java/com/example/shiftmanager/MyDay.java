@@ -4,7 +4,7 @@ import com.example.shiftmanager.ui.calendar.CalendarFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import java.util.List;
 
 
 public class MyDay
@@ -17,10 +17,12 @@ public class MyDay
         SickDay
     }
 
-    private String m_date;
+    private String m_date ;
     private ArrayList<MyHours> m_hours = new ArrayList<>();
     private DayStatus m_dayStatus = DayStatus.RegularDay;
 
+    public MyDay() {
+    }
 
     public MyDay(String date , DayStatus dayStatus)
     {

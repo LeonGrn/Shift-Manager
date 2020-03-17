@@ -58,7 +58,8 @@ public class VerifyCodeActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             String code = VerifyCode_TXT_code.getCode();
-            if (code.isEmpty() || code.length() < 6) {
+            if (code.isEmpty() || code.length() < 6)
+            {
                 VerifyCode_TXT_code.setError("Enter valid code");
                 VerifyCode_TXT_code.requestFocus();
                 return;

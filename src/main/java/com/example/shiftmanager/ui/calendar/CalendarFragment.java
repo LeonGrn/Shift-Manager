@@ -20,6 +20,7 @@ import com.example.shiftmanager.EditShiftActivity;
 import com.example.shiftmanager.MyAdapter;
 import com.example.shiftmanager.MyAdapterAddShift;
 import com.example.shiftmanager.MyDay;
+import com.example.shiftmanager.MyHours;
 import com.example.shiftmanager.MySharePreferences;
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.SetAdapterSickDay;
@@ -63,7 +64,6 @@ public class CalendarFragment extends Fragment {
         worker = msp.readDataFromSP();
         super.onCreate(savedInstanceState);
         mUserDBManager = new UserDBManager(getActivity().getApplicationContext());
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -124,15 +124,11 @@ public class CalendarFragment extends Fragment {
         }
         else if(myDay != null && (myDay.getM_dayStatus() == MyDay.DayStatus.SickDay))
         {
-//            setDayStatus = new ArrayList<>();
-//            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
             adapter4 = new SetAdapterSickDay(getActivity().getApplicationContext(), setDayStatus);
             listView.setAdapter(adapter4);
         }
         else if(myDay != null && (myDay.getM_dayStatus() == MyDay.DayStatus.DayOff))
         {
-//            setDayStatus = new ArrayList<>();
-//            setDayStatus.add(new TextView(getActivity().getApplicationContext()));
             adapter3 = new SetAdapterDayoff(getActivity().getApplicationContext(), setDayStatus);
             listView.setAdapter(adapter3);
         }

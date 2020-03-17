@@ -126,6 +126,7 @@ public class ReportsFragment extends Fragment {
         }
         else
             txt_total_hours_number.setText("00:00");
+
         txt_sick_days_number.setText(monthInfo[2] + "");
         txt_days_off_number.setText(monthInfo[3] + "");
         txt_work_on_rest_day_number.setText(monthInfo[4] + "");
